@@ -2,7 +2,7 @@ import { SVGProps } from "react";
 
 export default function SearchBar() {
   return (
-    <div className="flex items-center w-full max-w-md rounded-full border border-gray-700 bg-black/30 backdrop-blur-sm text-white px-4 py-2 transition-all duration-300 hover:border-green-500/50 focus-within:border-green-400">
+    <div className=" italic flex items-center w-full max-w-md rounded-full border border-gray-700 bg-black/30 backdrop-blur-sm text-white px-4 py-2 transition-all duration-300 hover:border-green-500/50 focus-within:border-green-400">
       <SearchIcon className="h-4 w-4 text-gray-400" />
       <input
         type="search"

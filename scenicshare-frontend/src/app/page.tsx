@@ -1,6 +1,7 @@
 import NavBar from "@/components/NavBar";
 import Image from "next/image";
 import backgroundImage from "../../public/scenic1.jpg";
+import Header from "@/components/Header";
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
       </div>
       <main className="relative z-10 min-h-screen">
         <NavBar />
+        <Header />
       </main>
     </div>
   );
