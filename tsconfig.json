@@ -1,0 +1,10 @@
+{
+  "extends": "./scenicshare-backend/functions/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "*": ["*"]
+    }
+  },
+  "include": ["scenicshare-backend/functions/src/**/*"]
+}
