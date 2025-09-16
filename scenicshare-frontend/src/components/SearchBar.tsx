@@ -1,17 +1,12 @@
-/**
- * v0 by Vercel.
- * @see https://v0.app/t/hVl5q7YIHfe
- * Documentation: https://v0.app/docs#integrating-generated-code-into-your-nextjs-app
- */
 import { SVGProps } from "react";
 
 export default function Component() {
   return (
-    <div className="flex items-center w-full max-w-sm space-x-2 rounded-lg border border-gray-300 bg-gray-50 dark:bg-gray-900 px-3 py-1">
+    <div className="text-xs italic flex items-center w-full max-w-sm space-x-2 rounded-lg border bg-zinc-900 border-zinc-700 text-zinc-500 px-3 py-1">
       <SearchIcon className="h-3.5 w-3.5" />
       <input
         type="search"
-        placeholder="Search"
+        placeholder="Enter Your Next Destination..."
         className="w-full border-0 h-6 font-semibold bg-transparent focus:outline-none"
       />
     </div>
