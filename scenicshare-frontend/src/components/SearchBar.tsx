@@ -1,13 +1,13 @@
 import { SVGProps } from "react";
 
-export default function Component() {
+export default function SearchBar() {
   return (
-    <div className="text-xs italic flex items-center w-full max-w-sm space-x-2 rounded-lg border bg-zinc-900 border-zinc-700 text-zinc-500 px-3 py-1">
-      <SearchIcon className="h-3.5 w-3.5" />
+    <div className="flex items-center w-full max-w-md rounded-full border border-gray-700 bg-black/30 backdrop-blur-sm text-white px-4 py-2 transition-all duration-300 hover:border-green-500/50 focus-within:border-green-400">
+      <SearchIcon className="h-4 w-4 text-gray-400" />
       <input
         type="search"
         placeholder="Enter Your Next Destination..."
-        className="w-full border-0 h-6 font-semibold bg-transparent focus:outline-none"
+        className="w-full ml-2 border-0 bg-transparent focus:outline-none text-sm font-medium placeholder:text-gray-500"
       />
     </div>
   );

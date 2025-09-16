@@ -5,16 +5,21 @@ import backgroundImage from "../../public/scenic1.jpg";
 export default function Home() {
   return (
     <div className="relative min-h-screen">
-      <div className="absolute inset-0 z-0">
+      <div className="fixed inset-0 w-full h-full z-0">
         <Image
           src={backgroundImage}
           alt="Scenic background"
           fill
-          style={{ objectFit: "cover", opacity: 0.4 }}
+          style={{
+            objectFit: "cover",
+            opacity: 0.4,
+            objectPosition: "center",
+          }}
           priority
+          quality={100}
         />
       </div>
-      <main className="relative z-10">
+      <main className="relative z-10 min-h-screen">
         <NavBar />
       </main>
     </div>
