@@ -22,7 +22,6 @@ export default function NavBar() {
           <div className="hidden md:flex md:items-center md:space-x-4">
             <Button text="Discover" />
             <Button text="My Routes" />
-            <Button text="Favourites" />
           </div>
 
           {/* Search Bar */}
