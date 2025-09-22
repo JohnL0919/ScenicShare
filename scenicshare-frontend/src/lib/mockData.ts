@@ -1,4 +1,4 @@
-export interface FeaturedRouteData {
+export interface ScenicRouteData {
   id: string;
   name: string;
   image: string;
@@ -8,17 +8,7 @@ export interface FeaturedRouteData {
   description?: string;
 }
 
-export interface DiscoverRouteData {
-  id: string;
-  name: string;
-  image: string;
-  location: string;
-  duration: string;
-  distance: string;
-  description?: string;
-}
-
-export const featuredRoutes: FeaturedRouteData[] = [
+export const scenicRouteMockData: ScenicRouteData[] = [
   {
     id: "1",
     name: "Sea Cliff Bridge",
@@ -29,40 +19,6 @@ export const featuredRoutes: FeaturedRouteData[] = [
     description:
       "A breathtaking coastal drive featuring the iconic Sea Cliff Bridge",
   },
-  {
-    id: "2",
-    name: "Great Ocean Road",
-    image: "/scenic1.jpg",
-    location: "Victoria, Australia",
-    duration: "3 hours",
-    distance: "243 kilometers",
-    description:
-      "Famous coastal drive with spectacular views of the Twelve Apostles",
-  },
-  {
-    id: "3",
-    name: "Blue Ridge Parkway",
-    image: "/scenic1.jpg",
-    location: "North Carolina, USA",
-    duration: "4.5 hours",
-    distance: "755 kilometers",
-    description:
-      "America's favorite scenic mountain drive through the Appalachians",
-  },
-  {
-    id: "4",
-    name: "Pacific Coast Highway",
-    image: "/scenic2.jpg",
-    location: "California, USA",
-    duration: "5 hours",
-    distance: "196 kilometers",
-    description: "Stunning coastal views along the rugged California shoreline",
-  },
-];
-
-export const currentFeaturedRoute = featuredRoutes[0];
-
-export const discoverRoutes: DiscoverRouteData[] = [
   {
     id: "5",
     name: "Waterfall Way",
@@ -105,8 +61,8 @@ export const discoverRoutes: DiscoverRouteData[] = [
     name: "Sealy Lookout",
     image: "/scenic7.jpg",
     location: "Sealy, Australia",
-    duration: "7 days",
-    distance: "1,332 kilometers",
+    duration: "2 hours",
+    distance: "40 kilometers",
     description:
       "Circular route showcasing Iceland's diverse landscapes and waterfalls",
   },

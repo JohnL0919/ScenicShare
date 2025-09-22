@@ -9,7 +9,7 @@ import CardOverflow from "@mui/joy/CardOverflow";
 import Divider from "@mui/joy/Divider";
 import Typography from "@mui/joy/Typography";
 import Box from "@mui/joy/Box";
-import { featuredRoutes, FeaturedRouteData } from "@/lib/mockData";
+import { scenicRouteMockData, ScenicRouteData } from "@/lib/mockData";
 
 interface FeaturedRouteProps {
   routeId?: string;
@@ -21,21 +21,23 @@ export default function FeaturedRoute({
   randomize = false,
 }: FeaturedRouteProps) {
   // Select the route based on props
-  const route: FeaturedRouteData = React.useMemo(() => {
+  const route: ScenicRouteData = React.useMemo(() => {
     // If randomize is true, pick a random route
     if (randomize) {
-      const randomIndex = Math.floor(Math.random() * featuredRoutes.length);
-      return featuredRoutes[randomIndex];
+      const randomIndex = Math.floor(
+        Math.random() * scenicRouteMockData.length
+      );
+      return scenicRouteMockData[randomIndex];
     }
 
     // If routeId is provided, find that specific route
     if (routeId) {
-      const foundRoute = featuredRoutes.find((r) => r.id === routeId);
+      const foundRoute = scenicRouteMockData.find((r) => r.id === routeId);
       if (foundRoute) return foundRoute;
     }
 
     // Default to first route
-    return featuredRoutes[0];
+    return scenicRouteMockData[0];
   }, [routeId, randomize]);
 
   return (

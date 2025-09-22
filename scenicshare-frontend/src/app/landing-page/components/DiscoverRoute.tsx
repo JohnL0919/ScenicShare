@@ -4,7 +4,7 @@ import Grid from "@mui/joy/Grid";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Typography from "@mui/joy/Typography";
-import { discoverRoutes } from "@/lib/mockData";
+import { scenicRouteMockData } from "@/lib/mockData";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Image from "next/image";
@@ -15,7 +15,7 @@ export default function DiscoverRoute() {
       <h1 className="text-center mb-2 text-3xl">Discover Routes </h1>
       <Box sx={{ flexGrow: 1, p: 2 }}>
         <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-          {discoverRoutes.map((route) => (
+          {scenicRouteMockData.map((route) => (
             <Grid xs={12} sm={6} md={4} key={route.id}>
               <Card
                 sx={{
