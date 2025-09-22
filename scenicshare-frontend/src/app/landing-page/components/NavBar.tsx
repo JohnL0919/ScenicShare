@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Button from "./Button";
 import SearchBar from "./SearchBar";
 
@@ -8,35 +8,44 @@ export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="backdrop-blur-sm bg-black/30 rounded-lg shadow-lg mx-20 mt-2">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-black/30 rounded-lg shadow-lg mx-2 sm:mx-4 md:mx-8 lg:mx-20 mt-2">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="text-xl sm:text-2xl font-bold text-white">
               <span className="text-green-700">Scenic</span>Share
             </h1>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex md:items-center md:space-x-4 ml-5">
+          <div className="hidden lg:flex lg:items-center lg:space-x-3 xl:space-x-4 ml-2 xl:ml-5">
             <Button text="Discover" />
             <Button text="My Routes" />
           </div>
 
           {/* Search Bar */}
-          <div className="hidden md:block flex-grow mx-8">
+          <div className="hidden lg:block flex-grow mx-2 xl:mx-8">
             <SearchBar />
           </div>
 
           {/* Right Side Buttons */}
-          <div className="hidden md:flex md:items-center md:space-x-4">
-            <Button text="Share Route +" variant="primary" />
-            <Button text="Profile" />
+          <div className="hidden lg:flex lg:items-center lg:space-x-2 xl:space-x-4">
+            <Button
+              text={
+                <>
+                  <span className="xl:inline hidden">Share Route +</span>
+                  <span className="xl:hidden inline">Share +</span>
+                </>
+              }
+              variant="primary"
+              size="compact"
+            />
+            <Button text="Profile" size="compact" />
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-green-700 focus:outline-none"
@@ -80,7 +89,7 @@ export default function NavBar() {
 
       {/* Mobile menu, show/hide based on menu state. */}
       {isOpen && (
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Button text="Discover" />
             <Button text="My Routes" />
@@ -88,7 +97,7 @@ export default function NavBar() {
             <div className="py-2">
               <SearchBar />
             </div>
-            <Button text="Share Route +" variant="primary" />
+            <Button text="Share +" variant="primary" />
             <Button text="Profile" />
           </div>
         </div>
