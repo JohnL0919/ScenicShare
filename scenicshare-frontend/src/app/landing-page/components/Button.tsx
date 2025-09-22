@@ -16,7 +16,7 @@ const Button = ({
   return (
     <button
       onClick={onClick}
-      className={`rounded-md font-medium transition-all duration-200 ${
+      className={`w-full rounded-md font-medium transition-all duration-200 ${
         size === "compact" ? "px-3 py-1 text-sm" : "px-4 py-2"
       } ${
         variant === "primary"
