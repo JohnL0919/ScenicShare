@@ -32,7 +32,6 @@ export default function Home() {
         <FeaturedRoute />
 
         <div className="mt-8 px-4 md:px-8 lg:px-16">
-          <h2 className="text-3xl font-bold mb-6">Discover More Routes</h2>
           <DiscoverRoute />
         </div>
       </main>
