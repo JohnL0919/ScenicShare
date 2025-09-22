@@ -10,7 +10,7 @@ export default function Header() {
         Explore breathtaking routes curated by fellow adventurers. Your next
         journey awaits.
       </h5>
-      <div className="flex flex-row gap-3">
+      <div className="flex flex-row gap-5">
         {" "}
         <SearchBar />
         <Button text="Discover" />
