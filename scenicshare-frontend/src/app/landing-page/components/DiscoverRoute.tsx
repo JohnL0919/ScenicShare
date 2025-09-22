@@ -14,7 +14,7 @@ export default function DiscoverRoute() {
   const routesToShow = scenicRouteMockData.slice(0, 6);
 
   return (
-    <div>
+    <div className="mt-8 px-4 md:px-8 lg:px-16">
       <h1 className="text-center mb-2 text-3xl">Discover Routes </h1>
       <Box sx={{ flexGrow: 1, p: 2 }}>
         <Grid container spacing={2} sx={{ flexGrow: 1 }}>
