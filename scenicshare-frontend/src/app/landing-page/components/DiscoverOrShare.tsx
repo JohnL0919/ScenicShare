@@ -90,7 +90,7 @@ export default function DiscoverOrShare() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="text-white transition-transform duration-300 hover:bounce"
+              className="text-white"
             >
               <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
               <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>

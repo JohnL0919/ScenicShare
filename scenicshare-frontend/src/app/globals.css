@@ -36,20 +36,6 @@ body {
   }
 }
 
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
-
 .animate-fadeIn {
   animation: fadeIn 0.8s ease-out forwards;
-}
-
-.hover\:bounce:hover {
-  animation: bounce 0.5s infinite;
 }
