@@ -3,33 +3,11 @@ import Box from "@mui/joy/Box";
 import Grid from "@mui/joy/Grid";
 import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
-import Chip from "@mui/joy/Chip";
 import Typography from "@mui/joy/Typography";
 import { discoverRoutes } from "@/lib/mockData";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import PhotoIcon from "@mui/icons-material/Photo";
 import Image from "next/image";
-
-// Map to assign difficulty levels to routes
-const routeDifficulties: Record<string, string> = {
-  "5": "Easy",
-  "6": "Moderate",
-  "7": "Easy",
-  "8": "Moderate",
-  "9": "Challenging",
-  "10": "Easy",
-};
-
-// Map to assign photo counts to routes
-const routePhotos: Record<string, number> = {
-  "5": 127,
-  "6": 203,
-  "7": 94,
-  "8": 167,
-  "9": 73,
-  "10": 145,
-};
 
 export default function DiscoverRoute() {
   return (
@@ -54,36 +32,6 @@ export default function DiscoverRoute() {
                 },
               }}
             >
-              <Box sx={{ position: "absolute", top: 8, left: 8, zIndex: 2 }}>
-                <Chip
-                  variant="solid"
-                  size="sm"
-                  sx={{
-                    bgcolor: "rgba(0,0,0,0.6)",
-                    color: "white",
-                    borderRadius: "4px",
-                  }}
-                >
-                  {routeDifficulties[route.id] || "Easy"}
-                </Chip>
-              </Box>
-              <Box sx={{ position: "absolute", top: 8, right: 8, zIndex: 2 }}>
-                <Chip
-                  variant="solid"
-                  size="sm"
-                  sx={{
-                    bgcolor: "rgba(0,0,0,0.6)",
-                    color: "white",
-                    borderRadius: "4px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 0.5,
-                  }}
-                >
-                  <PhotoIcon fontSize="small" />
-                  {routePhotos[route.id] || "99"}
-                </Chip>
-              </Box>
               <Box
                 sx={{
                   position: "relative",
