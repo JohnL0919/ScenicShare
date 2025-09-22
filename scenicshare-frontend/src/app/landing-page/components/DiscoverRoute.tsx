@@ -10,12 +10,15 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Image from "next/image";
 
 export default function DiscoverRoute() {
+  // Limit to only show 6 routes
+  const routesToShow = scenicRouteMockData.slice(0, 6);
+
   return (
     <div>
       <h1 className="text-center mb-2 text-3xl">Discover Routes </h1>
       <Box sx={{ flexGrow: 1, p: 2 }}>
         <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-          {scenicRouteMockData.map((route) => (
+          {routesToShow.map((route) => (
             <Grid xs={12} sm={6} md={4} key={route.id}>
               <Card
                 sx={{
