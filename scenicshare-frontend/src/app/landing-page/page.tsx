@@ -3,6 +3,7 @@ import Image from "next/image";
 import Header from "@/app/landing-page/components/Header";
 import FeaturedRoute from "./components/FeaturedRoute";
 import DiscoverRoute from "./components/DiscoverRoute";
+import DiscoverOrShare from "./components/DiscoverOrShare";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
         <Header />
         <FeaturedRoute />
         <DiscoverRoute />
+        <DiscoverOrShare />
       </main>
     </div>
   );
