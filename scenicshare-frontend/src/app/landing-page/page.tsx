@@ -4,6 +4,7 @@ import Header from "@/app/landing-page/components/Header";
 import FeaturedRoute from "./components/FeaturedRoute";
 import DiscoverRoute from "./components/DiscoverRoute";
 import DiscoverOrShare from "./components/DiscoverOrShare";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
@@ -28,6 +29,7 @@ export default function Home() {
         <FeaturedRoute />
         <DiscoverRoute />
         <DiscoverOrShare />
+        <Footer />
       </main>
     </div>
   );
