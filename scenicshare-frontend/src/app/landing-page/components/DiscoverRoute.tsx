@@ -38,12 +38,20 @@ export default function DiscoverRoute() {
                   sx={{
                     position: "relative",
                     width: "100%",
-                    overflow: "hidden",
-                    mt: "-1px",
-                    mx: "-1px",
                     height: 200,
+                    overflow: "hidden",
                     borderTopLeftRadius: "8px",
                     borderTopRightRadius: "8px",
+                    "&::before": {
+                      content: '""',
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: "transparent",
+                      zIndex: 1,
+                    },
                   }}
                 >
                   <Image
