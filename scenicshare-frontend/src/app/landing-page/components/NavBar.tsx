@@ -39,7 +39,7 @@ export default function NavBar() {
               <Button text="Share +" variant="primary" size="compact" />
             </div>
             <div className="w-24">
-              <Button text="Profile" size="compact" />
+              <Button text="Join Today" size="compact" />
             </div>
           </div>
 
@@ -97,7 +97,7 @@ export default function NavBar() {
               <SearchBar />
             </div>
             <Button text="Share +" variant="primary" />
-            <Button text="Profile" />
+            <Button text="Join Us" />
           </div>
         </div>
       )}
