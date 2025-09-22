@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Button from "./Button";
 import SearchBar from "./SearchBar";
+import Link from "next/link";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +14,9 @@ export default function NavBar() {
         <div className="flex justify-between h-16 items-center">
           <div className="flex-shrink-0 flex items-center">
             <h1 className="text-xl sm:text-2xl font-bold text-white">
-              <span className="text-green-700">Scenic</span>Share
+              <Link href="/landing-page">
+                <span className="text-green-700">Scenic</span>Share
+              </Link>
             </h1>
           </div>
 
