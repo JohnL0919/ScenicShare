@@ -2,6 +2,7 @@ import NavBar from "@/app/landing-page/components/NavBar";
 import Image from "next/image";
 import Header from "@/app/landing-page/components/Header";
 import FeaturedRoute from "./components/FeaturedRoute";
+import DiscoverRoute from "./components/DiscoverRoute";
 
 export default function Home() {
   return (
@@ -29,6 +30,11 @@ export default function Home() {
           Random route:                 <FeaturedRoute randomize={true} />
         */}
         <FeaturedRoute />
+
+        <div className="mt-8 px-4 md:px-8 lg:px-16">
+          <h2 className="text-3xl font-bold mb-6">Discover More Routes</h2>
+          <DiscoverRoute />
+        </div>
       </main>
     </div>
   );
