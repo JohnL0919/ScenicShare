@@ -20,8 +20,12 @@ export default function NavBar() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex lg:items-center lg:space-x-3 xl:space-x-4 ml-2 xl:ml-5">
-            <Button text="Discover" />
-            <Button text="My Routes" />
+            <div className="w-24">
+              <Button text="Discover" size="compact" />
+            </div>
+            <div className="w-24">
+              <Button text="My Routes" size="compact" />
+            </div>
           </div>
 
           {/* Search Bar */}
@@ -31,17 +35,12 @@ export default function NavBar() {
 
           {/* Right Side Buttons */}
           <div className="hidden lg:flex lg:items-center lg:space-x-2 xl:space-x-4">
-            <Button
-              text={
-                <>
-                  <span className="xl:inline hidden">Share Route +</span>
-                  <span className="xl:hidden inline">Share +</span>
-                </>
-              }
-              variant="primary"
-              size="compact"
-            />
-            <Button text="Profile" size="compact" />
+            <div className="w-20">
+              <Button text="Share +" variant="primary" size="compact" />
+            </div>
+            <div className="w-24">
+              <Button text="Profile" size="compact" />
+            </div>
           </div>
 
           {/* Mobile menu button */}
