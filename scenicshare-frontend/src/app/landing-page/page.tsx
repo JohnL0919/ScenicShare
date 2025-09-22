@@ -23,6 +23,11 @@ export default function Home() {
       <main className="relative z-10 min-h-screen justify-center">
         <NavBar />
         <Header />
+        {/* You can choose which route to display using these props:
+          Default route (first one):    <FeaturedRoute />
+          Specific route by ID:         <FeaturedRoute routeId="2" />
+          Random route:                 <FeaturedRoute randomize={true} />
+        */}
         <FeaturedRoute />
       </main>
     </div>
