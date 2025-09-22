@@ -1,4 +1,6 @@
+import NavBar from "../landing-page/components/NavBar";
 import Image from "next/image";
+import Header from "./components/Header";
 
 export default function Home() {
   return (
@@ -17,7 +19,10 @@ export default function Home() {
           quality={100}
         />
       </div>
-      <main className="relative z-10 min-h-screen justify-center"></main>
+      <main className="relative z-10 min-h-screen justify-center">
+        <NavBar />
+        <Header />
+      </main>
     </div>
   );
 }
