@@ -25,7 +25,6 @@ export const registerUser = async (
     );
     const results = userCredential.user;
     console.log(results);
-    //sending email verification to the user
     await sendEmailVerification(results);
     showSuccessMessage(
       `Thanks for signing up! Check ${email} (and your spam folder) to verify your account.`

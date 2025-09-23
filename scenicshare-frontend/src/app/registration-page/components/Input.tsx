@@ -27,7 +27,6 @@ const Input: React.FC<InputProps> = ({
         {label}
       </label>
 
-      {/* Only this box is relative, so the icon centers to the input height */}
       <div className="relative">
         {icon && (
           <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center opacity-60">

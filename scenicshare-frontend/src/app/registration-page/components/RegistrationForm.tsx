@@ -33,7 +33,6 @@ export default function RegistrationForm() {
     );
   }
 
-  // only enable submit when everything is filled + terms checked
   const isFormValid =
     name.trim() &&
     email.trim() &&
