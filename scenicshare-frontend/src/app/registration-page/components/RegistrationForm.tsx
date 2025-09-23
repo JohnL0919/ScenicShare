@@ -41,7 +41,7 @@ export default function RegistrationForm() {
     acceptTerms;
 
   return (
-    <main className="max-h-screen text-white flex items-center justify-center px-4 mt-[1rem]">
+    <main className=" text-white flex items-center justify-center px-4  ">
       <div className="w-full max-w-md rounded-xl p-6 md:p-7">
         <form className="space-y-4" onSubmit={handleSubmit}>
           {/* Name */}

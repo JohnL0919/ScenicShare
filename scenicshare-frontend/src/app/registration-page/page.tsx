@@ -5,7 +5,7 @@ import RegistrationForm from "./components/RegistrationForm";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen ">
+    <div className="relative h-screen overflow-hidden">
       <div className="fixed inset-0 w-full h-full z-0 ">
         <Image
           src="/scenic1.jpg"
@@ -20,7 +20,7 @@ export default function Home() {
           quality={100}
         />
       </div>
-      <main className="relative z-10 min-h-screen justify-center">
+      <main className="relative z-10 h-full flex flex-col pt-[10%]">
         <NavBar />
         <Header />
         <RegistrationForm />
