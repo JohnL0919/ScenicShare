@@ -1,7 +1,7 @@
 import NavBar from "../landing-page/components/NavBar";
 import Image from "next/image";
 import Header from "./components/Header";
-import RegistrationForm from "./components/RegistrationForm";
+import LogInForm from "./components/LogInForm";
 
 export default function RegistrationPage() {
   return (
@@ -23,7 +23,7 @@ export default function RegistrationPage() {
       <main className="relative z-10 h-full flex flex-col pt-[10%]">
         <NavBar />
         <Header />
-        <RegistrationForm />
+        <LogInForm />
       </main>
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import Input from "./Input";
 import { registerUser } from "@/lib/firebase/Authentication/EmailAuth";
 
@@ -77,6 +78,7 @@ export default function RegistrationForm() {
             name="password"
             placeholder="••••••••"
             value={password}
+            type="password"
             onChange={setPassword}
           />
 
@@ -86,6 +88,7 @@ export default function RegistrationForm() {
             name="confirmPassword"
             placeholder="••••••••"
             value={confirm}
+            type="password"
             onChange={setConfirm}
           />
 
@@ -118,6 +121,12 @@ export default function RegistrationForm() {
           >
             {isLoading ? "Creating..." : "Create Account"}
           </button>
+          <p className="text-center text-sm text-neutral-400">
+            Already have an account?{" "}
+            <Link href="/login-page" className="text-blue-400 hover:underline">
+              Sign in
+            </Link>
+          </p>
         </form>
       </div>
     </main>

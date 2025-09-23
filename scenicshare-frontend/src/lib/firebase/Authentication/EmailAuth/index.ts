@@ -1,6 +1,7 @@
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase/index";
 
@@ -28,5 +29,29 @@ export const registerUser = async (
     console.log(error);
   } finally {
     setLoading(false);
+  }
+};
+
+export const loginUserWithEmailAndPassword = async (
+  email: string,
+  password: string
+) => {
+  try {
+    console.log(email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const results = userCredential.user;
+    if (results.emailVerified === false) {
+      alert("Please verify your email address to continue.");
+    } else {
+      alert("Login successful");
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    console.log("finally");
   }
 };

@@ -35,10 +35,14 @@ export default function NavBar() {
 
           <div className="hidden lg:flex lg:items-center lg:space-x-2 xl:space-x-4">
             <div className="w-20">
-              <Button text="Share +" variant="primary" size="compact" />
+              <Button
+                href="/login-page"
+                text="Share +"
+                variant="primary"
+                size="compact"
+              />
             </div>
             <div className="w-24">
-              {/* add href here */}
               <Button
                 href="/registration-page"
                 text="Join Today"
@@ -68,7 +72,7 @@ export default function NavBar() {
             <div className="py-2">
               <SearchBar />
             </div>
-            <Button text="Share +" variant="primary" />
+            <Button href="/login-page" text="Share +" variant="primary" />
             <Button href="/registration-page" text="Join Us" />
           </div>
         </div>

@@ -7,7 +7,8 @@ type InputProps = {
   placeholder?: string;
   value: string;
   onChange: React.Dispatch<React.SetStateAction<string>>;
-  icon?: React.ReactNode; // optional, for left icon
+  icon?: React.ReactNode;
+  type?: React.InputHTMLAttributes<HTMLInputElement>["type"];
 };
 
 const Input: React.FC<InputProps> = ({
@@ -18,6 +19,7 @@ const Input: React.FC<InputProps> = ({
   onChange,
   className = "",
   icon,
+  type = "text",
 }) => {
   return (
     <div>
@@ -37,7 +39,7 @@ const Input: React.FC<InputProps> = ({
           name={name}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          type="text"
+          type={type}
           placeholder={placeholder || ""}
           className={`w-full rounded-md border-gray-400 border ${
             icon ? "pl-10" : "px-3"
