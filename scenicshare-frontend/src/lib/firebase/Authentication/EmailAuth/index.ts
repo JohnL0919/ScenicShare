@@ -30,8 +30,10 @@ export const registerUser = async (
     showSuccessMessage(
       `Thanks for signing up! Check ${email} (and your spam folder) to verify your account.`
     );
+    return true;
   } catch (error) {
     showFirebaseError(error);
+    return false;
   } finally {
     setLoading(false);
   }
