@@ -11,8 +11,12 @@ export default function LogInForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    loginUserWithEmailAndPassword(email, password);
-    console.log("asdfasdfasdfadfa");
+    setIsLoading(true);
+    try {
+      await loginUserWithEmailAndPassword(email, password);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (isLoading) {

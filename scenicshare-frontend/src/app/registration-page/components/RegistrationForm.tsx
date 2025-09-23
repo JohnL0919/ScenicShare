@@ -14,9 +14,9 @@ export default function RegistrationForm() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    registerUser(name, email, password, setIsLoading);
+    await registerUser(name, email, password, setIsLoading);
     // TODO: send form data
   };
 

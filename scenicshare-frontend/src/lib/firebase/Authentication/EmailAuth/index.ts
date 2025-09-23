@@ -4,6 +4,11 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "@/lib/firebase/index";
+import {
+  showFirebaseError,
+  showSuccessMessage,
+  showInfoMessage,
+} from "@/lib/errorHandler";
 
 export const registerUser = async (
   name: string,
@@ -21,12 +26,12 @@ export const registerUser = async (
     const results = userCredential.user;
     console.log(results);
     //sending email verification to the user
-    sendEmailVerification(results);
-    alert(
+    await sendEmailVerification(results);
+    showSuccessMessage(
       `Thanks for signing up! Check ${email} (and your spam folder) to verify your account.`
     );
   } catch (error) {
-    console.log(error);
+    showFirebaseError(error);
   } finally {
     setLoading(false);
   }
@@ -45,12 +50,12 @@ export const loginUserWithEmailAndPassword = async (
     );
     const results = userCredential.user;
     if (results.emailVerified === false) {
-      alert("Please verify your email address to continue.");
+      showInfoMessage("Please verify your email address to continue.");
     } else {
-      alert("Login successful");
+      showSuccessMessage("Login successful");
     }
   } catch (error) {
-    console.log(error);
+    showFirebaseError(error);
   } finally {
     console.log("finally");
   }
