@@ -30,6 +30,7 @@ const Button = ({
     </Link>
   ) : (
     <button onClick={onClick} className={cls}>
+
       {text}
     </button>
   );
