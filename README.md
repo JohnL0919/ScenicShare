@@ -1,4 +1,4 @@
-# ScenicShare
+# ScenicShare - Link Coming Soon...
 ScenicShare — discover, record, and share epic driving routes with maps, photos, tags, and ratings. Think Strava for road trips—built for car lovers, photographers, and adventure seekers.
 
 Plot the perfect drive. ScenicShare lets you map routes, add photos, tag highlights, and rate the ride—then share it with a community of road-trip fanatics.
