@@ -4,6 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
 import StatsDisplay from "./StatsDisplay";
+import Button from "@/app/home-page/components/Button";
 
 export default function Header() {
   const [displayName, setDisplayName] = useState<string | null>(null);
@@ -33,15 +34,46 @@ export default function Header() {
   const userName = displayName || email?.split("@")[0] || "Explorer";
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 text-left mt-24 sm:mt-28 lg:mt-32 w-full sm:w-[70%] md:w-[60%] lg:w-[50%] xl:w-[40%] mx-auto lg:mx-20">
-      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
-        Welcome Back, {userName}
-      </h1>
-      <h5 className="my-3 sm:my-5 text-sm sm:text-base">
-        Ready for your next scenic adventure?
-      </h5>
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 w-full"></div>
-      <StatsDisplay />
+    <div className="grid grid-cols-2 px-4 sm:px-6 lg:px-8 w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto mt-24 sm:mt-28 lg:mt-32">
+      {/* Left column - Welcome text */}
+      <div className="flex flex-col">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3">
+          Welcome Back,
+          <br />
+          {userName}
+        </h1>
+        <h2 className="text-3xl  mb-6 mt-[30rem]">
+          Ready for your next scenic adventure?
+        </h2>
+        <div className="mt-2 w-64">
+          <Button
+            variant="primary"
+            href="/pathCreator-page"
+            text={
+              <div className="flex items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Create New Path
+              </div>
+            }
+          />
+        </div>
+      </div>
+
+      {/* Right column - Stats */}
+      <div>
+        <StatsDisplay />
+      </div>
     </div>
   );
 }

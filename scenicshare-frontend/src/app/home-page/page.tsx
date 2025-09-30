@@ -1,6 +1,7 @@
 import NavBar from "@/app/home-page/components/NavBar";
 import Image from "next/image";
 import Header from "@/app/home-page/components/Header";
+import DiscoverRoute from "../landing-page/components/DiscoverRoute";
 import Footer from "../landing-page/components/Footer";
 
 export default function HomePage() {
@@ -23,6 +24,7 @@ export default function HomePage() {
       <main className="relative z-10 flex-grow flex flex-col">
         <NavBar />
         <Header />
+        <DiscoverRoute />
       </main>
       <div className="relative z-10 mt-auto">
         <Footer />
