@@ -1,6 +1,7 @@
 import NavBar from "@/app/home-page/components/NavBar";
 import Image from "next/image";
 import Header from "@/app/home-page/components/Header";
+import Footer from "../landing-page/components/Footer";
 
 export default function HomePage() {
   return (
@@ -22,6 +23,7 @@ export default function HomePage() {
       <main className="relative z-10 min-h-screen justify-center">
         <NavBar />
         <Header />
+        <Footer />
       </main>
     </div>
   );
