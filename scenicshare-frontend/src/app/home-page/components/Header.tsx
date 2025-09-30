@@ -21,7 +21,12 @@ export default function Header() {
 
     return () => unsubscribe();
   }, []);
-  //the empty array above just means don't run again.
+  /**This component sets up a Firebase Auth subscription inside a useEffect that runs once on mount. We call onAuthStateChanged(auth, (user) => { ... }).
+   * Firebase immediately invokes that callback with the current auth state—either a user object or null.
+   * If there’s a user, we store user.email and user.displayName in React state; if not, we clear them.
+   * Updating state triggers a re-render so the greeting shows the right name. The same callback runs
+   * whenever auth changes—sign in, sign out, or token refresh—so the UI stays in sync.
+   * onAuthStateChanged returns an unsubscribe function, which we return from useEffect to clean up the listener when the component unmounts and avoid memory leaks. */
 
   // Get the name to display in the welcome message
   const userName = displayName || email?.split("@")[0] || "Explorer";
