@@ -45,7 +45,7 @@ export default function Header() {
         <h2 className="text-3xl  mb-6 mt-[30rem]">
           Ready for your next scenic adventure?
         </h2>
-        <div className="mt-2 w-64">
+        <div className=" w-64">
           <Button
             variant="primary"
             href="/pathCreator-page"
