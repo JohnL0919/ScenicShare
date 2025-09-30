@@ -1,13 +1,12 @@
 "use client";
 
-import { MapContainer, TileLayer, useMap, Popup, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Popup, Marker } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
 import L from "leaflet";
 
 export default function PathCreatorPage() {
   useEffect(() => {
-    // This is needed to fix the missing icon problem in Leaflet with Next.js
     const iconUrl =
       "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png";
     const shadowUrl =
@@ -21,7 +20,6 @@ export default function PathCreatorPage() {
       tooltipAnchor: [16, -28],
       shadowSize: [41, 41],
     });
-
     L.Marker.prototype.options.icon = iconDefault;
   }, []);
 
@@ -30,13 +28,15 @@ export default function PathCreatorPage() {
       <MapContainer
         center={[-33.8688, 151.2093]}
         zoom={13}
-        scrollWheelZoom={true}
+        scrollWheelZoom
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
-          attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Style: <a href="https://openmaptiles.org/styles/">OSM Bright</a>'
-          url="https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png"
+          className="bright-tiles"
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          attribution="&copy; OpenStreetMap contributors &copy; CARTO"
         />
+
         <Marker position={[-33.8688, 151.2093]}>
           <Popup>Sydney, Australia</Popup>
         </Marker>
