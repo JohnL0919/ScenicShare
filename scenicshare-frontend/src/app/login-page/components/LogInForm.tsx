@@ -1,23 +1,34 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Input from "../../registration-page/components/Input";
 import { loginUserWithEmailAndPassword } from "@/lib/firebase/Authentication/EmailAuth";
+import { useAuth } from "@/contexts/authContexts";
 
 export default function LogInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { userLoggedIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       await loginUserWithEmailAndPassword(email, password);
+      // Navigation will happen automatically through auth state change
     } finally {
       setIsLoading(false);
     }
   };
+
+  // If already logged in, redirect to home page
+  if (userLoggedIn) {
+    router.push("/home-page");
+    return null;
+  }
 
   if (isLoading) {
     return (

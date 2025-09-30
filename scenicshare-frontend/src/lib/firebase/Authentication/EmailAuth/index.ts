@@ -54,9 +54,12 @@ export const loginUserWithEmailAndPassword = async (
       showInfoMessage("Please verify your email address to continue.");
     } else {
       showSuccessMessage("Login successful");
+      // Auth state change will trigger redirect in the component
     }
+    return results;
   } catch (error) {
     showFirebaseError(error);
+    return null;
   } finally {
     console.log("finally");
   }

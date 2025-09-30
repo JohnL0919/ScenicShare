@@ -1,4 +1,4 @@
-import { auth } from "@/firebase/firebase";
+import { auth } from "@/lib/firebase";
 import { useEffect, useState, useContext, createContext } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -37,3 +37,8 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+// Export a hook to use the auth context
+export const useAuth = () => {
+  return useContext(AuthContext);
+};

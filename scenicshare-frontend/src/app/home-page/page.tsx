@@ -1,6 +1,6 @@
-import NavBar from "@/app/landing-page/components/NavBar";
+import NavBar from "@/app/home-page/components/NavBar";
 import Image from "next/image";
-import Header from "@/app/landing-page/components/Header";
+import Header from "@/app/home-page/components/Header";
 
 export default function HomePage() {
   return (
