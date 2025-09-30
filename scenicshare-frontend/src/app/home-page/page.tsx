@@ -5,7 +5,7 @@ import Footer from "../landing-page/components/Footer";
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen flex flex-col">
       <div className="fixed inset-0 w-full h-full z-0">
         <Image
           src="/scenic1.jpg"
@@ -20,11 +20,13 @@ export default function HomePage() {
           quality={100}
         />
       </div>
-      <main className="relative z-10 min-h-screen justify-center">
+      <main className="relative z-10 flex-grow flex flex-col">
         <NavBar />
         <Header />
-        <Footer />
       </main>
+      <div className="relative z-10 mt-auto">
+        <Footer />
+      </div>
     </div>
   );
 }
