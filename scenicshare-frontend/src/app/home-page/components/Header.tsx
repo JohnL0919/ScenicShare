@@ -37,8 +37,7 @@ export default function Header() {
         Welcome Back, {userName}
       </h1>
       <h5 className="my-3 sm:my-5 text-sm sm:text-base">
-        Explore breathtaking routes curated by fellow adventurers. Your next
-        journey awaits.
+        Ready for your next scenic adventure?
       </h5>
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 w-full"></div>
     </div>
