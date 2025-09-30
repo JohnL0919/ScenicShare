@@ -3,6 +3,7 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "@/lib/firebase";
+import StatsDisplay from "./StatsDisplay";
 
 export default function Header() {
   const [displayName, setDisplayName] = useState<string | null>(null);
@@ -40,6 +41,7 @@ export default function Header() {
         Ready for your next scenic adventure?
       </h5>
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 w-full"></div>
+      <StatsDisplay />
     </div>
   );
 }
