@@ -34,8 +34,8 @@ export default function PathCreatorPage() {
         style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Style: <a href="https://openmaptiles.org/styles/">OSM Bright</a>'
+          url="https://tiles.stadiamaps.com/tiles/osm_bright/{z}/{x}/{y}{r}.png"
         />
         <Marker position={[-33.8688, 151.2093]}>
           <Popup>Sydney, Australia</Popup>
