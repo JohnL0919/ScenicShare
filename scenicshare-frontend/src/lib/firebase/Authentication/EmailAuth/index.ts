@@ -43,7 +43,7 @@ export const loginUserWithEmailAndPassword = async (
   password: string
 ) => {
   try {
-    console.log(email, password);
+    console.log("successfully logged in as", email);
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,

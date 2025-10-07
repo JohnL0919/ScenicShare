@@ -1,13 +1,19 @@
 {
   "name": "scenicshare-frontend",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "npm run --workspace scenicshare-frontend dev",
+    "dev:frontend": "npm run --workspace scenicshare-frontend dev",
+    "dev:backend": "npm run --workspace scenicshare-backend dev",
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint"
   },
+  "private": true,
+  "workspaces": [
+    "scenicshare-frontend",
+    "scenicshare-backend"
+  ],
   "dependencies": {
     "@dataconnect/generated": "file:src/dataconnect-generated",
     "@emotion/react": "^11.14.0",
