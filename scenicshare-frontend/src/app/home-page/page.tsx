@@ -1,5 +1,4 @@
 import NavBar from "@/app/home-page/components/NavBar";
-import Image from "next/image";
 import Header from "@/app/home-page/components/Header";
 import DiscoverRoute from "../landing-page/components/DiscoverRoute";
 import Footer from "../landing-page/components/Footer";
@@ -8,18 +7,12 @@ export default function HomePage() {
   return (
     <div className="relative min-h-screen flex flex-col">
       <div className="fixed inset-0 w-full h-full z-0">
-        <Image
-          src="/scenic1.jpg"
-          alt="Scenic background"
-          fill
-          style={{
-            objectFit: "cover",
-            opacity: 0.4,
-            objectPosition: "center",
-          }}
-          priority
-          quality={100}
-        />
+        <video autoPlay muted loop style={{ width: "100%", height: "100%" }}>
+          <source
+            src="/scenicvid1.mp4
+"
+          />
+        </video>
       </div>
       <main className="relative z-10 flex-grow flex flex-col">
         <NavBar />

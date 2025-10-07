@@ -37,7 +37,7 @@ export default function Header() {
     <div className="grid grid-cols-2 px-4 sm:px-6 lg:px-8 w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto mt-24 sm:mt-28 lg:mt-32">
       {/* Left column - Welcome text */}
       <div className="flex flex-col">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-3">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl mt-3">
           Welcome Back,
           <br />
           {userName}
