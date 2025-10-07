@@ -7,11 +7,8 @@ export default function HomePage() {
   return (
     <div className="relative min-h-screen flex flex-col">
       <div className="fixed inset-0 w-full h-full z-0">
-        <video autoPlay muted loop style={{ width: "100%", height: "100%" }}>
-          <source
-            src="/scenicvid1.mp4
-"
-          />
+        <video autoPlay muted loop className="w-full h-full object-cover">
+          <source src="/scenicvid1.mp4" />
         </video>
       </div>
       <main className="relative z-10 flex-grow flex flex-col">
