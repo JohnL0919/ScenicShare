@@ -28,13 +28,13 @@ const Section: React.FC<{
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between px-3 py-2 bg-gray-50 hover:bg-gray-100"
+        className="w-full flex items-center justify-between px-2 py-1.5 bg-gray-50 hover:bg-gray-100"
         aria-expanded={open}
       >
         <span className="text-sm font-medium text-gray-800">{title}</span>
         <span className="text-gray-500">{open ? "▾" : "▸"}</span>
       </button>
-      <div className={`${open ? "block" : "hidden"} p-3 bg-white`}>
+      <div className={`${open ? "block" : "hidden"} p-2 bg-white`}>
         {children}
       </div>
     </section>
@@ -103,25 +103,30 @@ export default function ControlPanel({ onRouteDataChange }: ControlPanelProps) {
       <aside
         id="route-drawer"
         className={`
-          fixed top-[1rem] right-[1rem] z-[1000] rounded-2xl
+          fixed top-1/2 -translate-y-1/2 right-[1rem] z-[1000] rounded-2xl
           w-[360px] md:w-[380px] lg:w-[360px]
+          max-h-[80vh]
           bg-white/95 backdrop-blur border-l border-black/10 shadow-xl
           transition-transform duration-300 ease-out
           ${open ? "translate-x-0" : "translate-x-full"}
           pt-4
+          flex flex-col
         `}
         role="complementary"
         aria-label="Route creator panel"
       >
-        <div className="p-4 space-y-3 overflow-y-auto ">
+        <div className="p-4 space-y-3 overflow-y-auto h-full">
+          <h1 className="text-xl font-bold text-gray-800 mb-3">
+            Create Your Route
+          </h1>
           <Section title="Details">
-            <label className="block mb-3">
+            <label className="block mb-2">
               <span className="block text-sm text-gray-700 mb-1">
                 Route Title
               </span>
               <input
                 type="text"
-                className="w-full p-3 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
                 value={title}
                 onChange={(e) => {
                   setTitle(e.target.value);
@@ -136,7 +141,7 @@ export default function ControlPanel({ onRouteDataChange }: ControlPanelProps) {
                 Description
               </span>
               <textarea
-                rows={4}
+                rows={3}
                 className="w-full p-3 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 resize-y"
                 value={description}
                 onChange={(e) => {

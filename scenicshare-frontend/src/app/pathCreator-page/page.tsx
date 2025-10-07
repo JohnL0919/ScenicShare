@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import L from "leaflet";
 import Button from "./components/Button";
 import ControlPanel from "./components/ControlPanel";
+import NavBar from "./components/NavBar";
 
 export default function PathCreatorPage() {
   useEffect(() => {
@@ -41,6 +42,9 @@ export default function PathCreatorPage() {
       `}</style>
       <div className="h-screen w-full m-0 p-0 relative">
         <div className="absolute top-4 left-12 z-[1000] sm:top-auto sm:bottom-4 sm:left-4 sm:w-auto sm:max-w-[120px] sm:p-0">
+          <NavBar />
+        </div>
+        <div className="absolute top-4 left-12 z-[1000] sm:top-auto sm:bottom-4 sm:left-4 sm:w-auto sm:max-w-[120px] sm:p-0">
           <Button
             variant="primary"
             href="/home-page"
@@ -60,7 +64,6 @@ export default function PathCreatorPage() {
                     d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
                   />
                 </svg>
-                <span className="btn-text">Go Back to Home</span>{" "}
               </div>
             }
           />
