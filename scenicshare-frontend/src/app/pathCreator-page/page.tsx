@@ -41,7 +41,7 @@ export default function PathCreatorPage() {
         }
       `}</style>
       <div className="h-screen w-full m-0 p-0 relative">
-        <div className="absolute top-4 left-12 z-[1000] sm:top-auto sm:bottom-4 sm:left-4 sm:w-auto sm:max-w-[120px] sm:p-0">
+        <div className="absolute top-4 left-12 z-[1000] sm:top-auto sm:bottom-4 sm:left-4 sm:w-auto sm:max-w-[120px] sm:p-0 md:block hidden">
           <NavBar />
         </div>
         <div className="absolute top-4 left-12 z-[1000] sm:top-auto sm:bottom-4 sm:left-4 sm:w-auto sm:max-w-[120px] sm:p-0">
