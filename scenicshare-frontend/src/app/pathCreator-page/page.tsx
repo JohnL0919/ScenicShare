@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
 import L from "leaflet";
 import Button from "./components/Button";
+import ControlPanel from "./components/ControlPanel";
 
 export default function PathCreatorPage() {
   useEffect(() => {
@@ -26,23 +27,8 @@ export default function PathCreatorPage() {
 
   return (
     <>
-      <style>{`
-        .overlay-btn-container {
-          position: absolute;
-          top: 1rem;
-          left: 3rem;
-          z-index: 1000;
-        }
+      <style jsx>{`
         @media (max-width: 600px) {
-          .overlay-btn-container {
-            top: auto;
-            bottom: 1rem;
-            left: 1rem;
-            transform: none;
-            width: auto;
-            max-width: 120px;
-            padding: 0;
-          }
           .overlay-btn-container button {
             width: 100%;
             font-size: 0.8rem;
@@ -53,16 +39,8 @@ export default function PathCreatorPage() {
           }
         }
       `}</style>
-      <div
-        style={{
-          height: "100vh",
-          width: "100%",
-          margin: 0,
-          padding: 0,
-          position: "relative",
-        }}
-      >
-        <div className="overlay-btn-container">
+      <div className="h-screen w-full m-0 p-0 relative">
+        <div className="absolute top-4 left-12 z-[1000] sm:top-auto sm:bottom-4 sm:left-4 sm:w-auto sm:max-w-[120px] sm:p-0">
           <Button
             variant="primary"
             href="/home-page"
@@ -87,11 +65,16 @@ export default function PathCreatorPage() {
             }
           />
         </div>
+        <ControlPanel
+          onRouteDataChange={(data) => {
+            console.log("Route data updated:", data);
+          }}
+        />
         <MapContainer
           center={[-33.8688, 151.2093]}
           zoom={13}
           scrollWheelZoom
-          style={{ height: "100%", width: "100%" }}
+          className="h-full w-full"
         >
           <TileLayer
             className="bright-tiles"
