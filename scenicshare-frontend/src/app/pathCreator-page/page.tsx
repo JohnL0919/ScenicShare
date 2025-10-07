@@ -29,7 +29,7 @@ export default function PathCreatorPage() {
       <style>{`
         .overlay-btn-container {
           position: absolute;
-          top: 12rem;
+          top: 1rem;
           left: 3rem;
           z-index: 1000;
         }
