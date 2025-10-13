@@ -46,9 +46,7 @@ function App() {
               <HomePage />
               <CreatePath />
             </ProtectedRoute>
-            {/* {isLoggedIn && (
-              <Route path="/createpath" element={<CreatePath />} />
-            )} */}
+
             {isLoggedIn && <Route path="/admin" element={<Admin />} />}
 
             <Route path="*" element={<NotFound />} />

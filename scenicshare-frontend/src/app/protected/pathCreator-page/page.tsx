@@ -47,7 +47,7 @@ export default function PathCreatorPage() {
         <div className="absolute top-4 left-12 z-[1000] sm:top-auto sm:bottom-4 sm:left-4 sm:w-auto sm:max-w-[120px] sm:p-0">
           <Button
             variant="primary"
-            href="/home-page"
+            href="/protected/home-page"
             text={
               <div className="flex items-center justify-center">
                 <svg

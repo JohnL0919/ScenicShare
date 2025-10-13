@@ -51,7 +51,7 @@ export default function Header() {
         <div className=" w-64">
           <Button
             variant="primary"
-            href="/pathCreator-page"
+            href="/protected/pathCreator-page"
             text={
               <div className="flex items-center justify-center">
                 <svg
