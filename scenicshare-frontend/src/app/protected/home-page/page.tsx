@@ -1,7 +1,7 @@
-import NavBar from "@/app/home-page/components/NavBar";
-import Header from "@/app/home-page/components/Header";
-import DiscoverRoute from "../landing-page/components/DiscoverRoute";
-import Footer from "../landing-page/components/Footer";
+import NavBar from "@/app/protected/home-page/components/NavBar";
+import Header from "@/app/protected/home-page/components/Header";
+import DiscoverRoute from "../../landing-page/components/DiscoverRoute";
+import Footer from "../../landing-page/components/Footer";
 
 export default function HomePage() {
   return (

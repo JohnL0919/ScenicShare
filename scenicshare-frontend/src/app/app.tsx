@@ -4,10 +4,11 @@ import { useSelector, useDispatch } from "react-redux";
 import "./globals.css";
 import Home from "./landing-page/page";
 import Layout from "./ClientLayout";
-import HomePage from "./home-page/page";
-import CreatePath from "./pathCreator-page/page";
+import HomePage from "./protected/home-page/page";
+import CreatePath from "./protected/pathCreator-page/page";
 import Login from "./login-page/page";
 import Register from "./registration-page/page";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 // Import placeholders for pages not yet created
 const Admin = () => <div>Admin Page</div>;
@@ -41,9 +42,13 @@ function App() {
             <Route path="/login" element={<Login />} />
 
             {/* Only logged in users can access these */}
-            {isLoggedIn && (
+            <ProtectedRoute>
+              <HomePage />
+              <CreatePath />
+            </ProtectedRoute>
+            {/* {isLoggedIn && (
               <Route path="/createpath" element={<CreatePath />} />
-            )}
+            )} */}
             {isLoggedIn && <Route path="/admin" element={<Admin />} />}
 
             <Route path="*" element={<NotFound />} />

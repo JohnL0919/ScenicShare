@@ -2,9 +2,9 @@
 
 import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { auth } from "@/lib/firebase";
+import { auth } from "@/lib/firebase/firebase";
 import StatsDisplay from "./StatsDisplay";
-import Button from "@/app/home-page/components/Button";
+import Button from "@/app/protected/home-page/components/Button";
 
 export default function Header() {
   const [displayName, setDisplayName] = useState<string | null>(null);

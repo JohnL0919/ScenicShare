@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Input from "../../registration-page/components/Input";
@@ -13,6 +13,13 @@ export default function LogInForm() {
   const router = useRouter();
   const { userLoggedIn } = useAuth();
 
+  // Use useEffect for navigation instead of doing it during render
+  useEffect(() => {
+    if (userLoggedIn) {
+      router.push("/protected/home-page");
+    }
+  }, [userLoggedIn, router]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -24,10 +31,9 @@ export default function LogInForm() {
     }
   };
 
-  // If already logged in, redirect to home page
+  // Don't render the form if the user is already logged in
   if (userLoggedIn) {
-    router.push("/home-page");
-    return null;
+    return <div className="text-center mt-10">Redirecting to home page...</div>;
   }
 
   if (isLoading) {

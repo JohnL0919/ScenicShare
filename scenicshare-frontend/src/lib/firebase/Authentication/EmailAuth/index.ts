@@ -3,7 +3,7 @@ import {
   sendEmailVerification,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase/index";
+import { auth } from "@/lib/firebase/firebase";
 import {
   showFirebaseError,
   showSuccessMessage,
