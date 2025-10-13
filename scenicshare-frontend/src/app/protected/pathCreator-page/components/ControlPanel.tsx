@@ -119,6 +119,10 @@ export default function ControlPanel({ onRouteDataChange }: ControlPanelProps) {
           <h1 className="text-xl font-bold text-gray-800 mb-3">
             Create Your Route
           </h1>
+          <h6 className="text-sm  text-gray-400 mb-10">
+            Please drag the waypoints to choose your starting point and
+            destination.
+          </h6>
           <Section title="Details">
             <label className="block mb-2">
               <span className="block text-sm text-gray-700 mb-1">

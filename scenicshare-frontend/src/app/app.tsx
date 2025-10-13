@@ -1,6 +1,5 @@
 import { Route, Routes, BrowserRouter, Outlet } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { useSelector, useDispatch } from "react-redux";
 import "./globals.css";
 import Home from "./landing-page/page";
 import Layout from "./ClientLayout";
@@ -11,7 +10,6 @@ import Register from "./registration-page/page";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 // Import placeholders for pages not yet created
-const Admin = () => <div>Admin Page</div>;
 const NotFound = () => <div>404 Page Not Found</div>;
 
 interface State {
@@ -22,9 +20,6 @@ interface State {
 }
 
 function App() {
-  const dispatch = useDispatch();
-  const { isLoggedIn, token } = useSelector((state: State) => state.userInfo);
-
   return (
     <>
       <BrowserRouter>
@@ -46,8 +41,6 @@ function App() {
               <HomePage />
               <CreatePath />
             </ProtectedRoute>
-
-            {isLoggedIn && <Route path="/admin" element={<Admin />} />}
 
             <Route path="*" element={<NotFound />} />
           </Route>

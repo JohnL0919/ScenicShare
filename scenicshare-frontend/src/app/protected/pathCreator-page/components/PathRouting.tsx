@@ -46,13 +46,13 @@ export default function PathRouting({
     const routingControl = Routing.control({
       waypoints: [L.latLng(from), L.latLng(to)],
       lineOptions: {
-        addWaypoints: true, // Allow users to add waypoints by clicking on the route
+        addWaypoints: false, // Allow users to add waypoints by clicking on the route
         styles: [{ opacity: 0.8, weight: 6, color: "#3b82f6" }],
       },
       fitSelectedRoutes: true,
-      show: false, // Hide the routing panel
+      show: false, // Show the routing panel for better user interaction
       draggableWaypoints: true, // Enable dragging waypoints
-      addWaypoints: true, // Allow adding waypoints by clicking on route
+      addWaypoints: false, // Allow adding waypoints by clicking on route
       router: Routing.osrmv1({
         serviceUrl: "https://router.project-osrm.org/route/v1",
         profile: "driving", // 'driving' | 'walking' | 'cycling'
