@@ -84,7 +84,7 @@ export default function ControlPanel({
         aria-controls="route-drawer"
         className="
           fixed bottom-4 right-4 z-[1003]
-          rounded-full shadow-lg px-4 py-3
+          rounded-full shadow-lg px-4 py-2
           bg-blue-600 text-white text-sm
           hover:bg-blue-700
           focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400
@@ -110,10 +110,10 @@ export default function ControlPanel({
         aria-label="Route creator panel"
       >
         <div className="p-4 space-y-3 overflow-y-auto h-full">
-          <h1 className="text-xl font-bold text-gray-800 mb-3">
+          <h1 className="text-xl font-bold text-gray-800 mb-1">
             Create Your Route
           </h1>
-          <h6 className="text-sm  text-gray-400 mb-10">
+          <h6 className="text-sm  text-gray-400 mb-7">
             Please drag the waypoints to choose your starting point and
             destination.
           </h6>
@@ -180,62 +180,19 @@ export default function ControlPanel({
             ) : (
               <p className="text-sm text-gray-500">No waypoints yet.</p>
             )}
-
-            <div className="mt-3 flex gap-2 max-lg:flex-col">
-              <input
-                type="text"
-                className="flex-1 p-3 border border-gray-300 text-gray-600 rounded-lg"
-                value={newWaypointName}
-                onChange={(e) => setNewWaypointName(e.target.value)}
-                placeholder="Add waypoint..."
-                onKeyDown={(e) => e.key === "Enter" && addWaypoint()}
-              />
-              <button
-                onClick={addWaypoint}
-                className="px-4 py-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
-              >
-                Add
-              </button>
-            </div>
           </Section>
 
-          <Section title="Actions" defaultOpen>
-            <div className="flex gap-3 max-lg:flex-col">
-              <Button
-                variant="primary"
-                text="Save Route"
-                onClick={() =>
-                  console.log("Saving route:", {
-                    title,
-                    description,
-                    waypoints,
-                  })
-                }
-              />
-              <Button
-                variant="secondary"
-                text="Clear All"
-                onClick={() => {
-                  setTitle("");
-                  setDescription("");
-                  onWaypointsChange?.([
-                    {
-                      id: "start",
-                      name: "Start",
-                      lat: -33.8688,
-                      lng: 151.2093,
-                    },
-                    {
-                      id: "end",
-                      name: "End",
-                      lat: -33.9173,
-                      lng: 151.2313,
-                    },
-                  ]);
-                }}
-              />
-            </div>
-          </Section>
+          <Button
+            variant="primary"
+            text="Save Route"
+            onClick={() =>
+              console.log("Saving route:", {
+                title,
+                description,
+                waypoints,
+              })
+            }
+          />
         </div>
       </aside>
 
