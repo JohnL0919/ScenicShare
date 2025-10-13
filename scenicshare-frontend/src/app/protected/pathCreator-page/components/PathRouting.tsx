@@ -11,54 +11,59 @@ import "leaflet-routing-machine";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const LWithRouting = L as any;
 
-interface RouteData {
-  distanceMeters: number;
-  durationSeconds: number;
-  polyline: [number, number][];
+interface Waypoint {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
 }
 
-interface Waypoint {
+interface LeafletWaypoint {
   latLng: L.LatLng;
   name?: string;
   options?: Record<string, unknown>;
 }
 
 interface PathRoutingProps {
-  from?: L.LatLngTuple;
-  to?: L.LatLngTuple;
-  onRouteDataChange?: (data: RouteData) => void;
+  waypoints?: Waypoint[];
+  onWaypointsChange?: (waypoints: Waypoint[]) => void;
 }
 
 export default function PathRouting({
-  from = [-33.8688, 151.2093], // Default: Sydney Opera House
-  to = [-33.9173, 151.2313], // Default: Sydney Airport
-  onRouteDataChange,
+  waypoints = [],
+  onWaypointsChange,
 }: PathRoutingProps) {
   const map = useMap();
 
   useEffect(() => {
-    if (!map) return;
+    if (!map || waypoints.length < 2) return;
 
-    // TS: L.Routing is added by the side-effect import above
     const Routing = LWithRouting.Routing;
     if (!Routing) return;
 
+    // Convert waypoints to LatLng format
+    const latLngs = waypoints.map((wp) => L.latLng(wp.lat, wp.lng));
+
     const routingControl = Routing.control({
-      waypoints: [L.latLng(from), L.latLng(to)],
+      waypoints: latLngs,
       lineOptions: {
-        addWaypoints: false, // Allow users to add waypoints by clicking on the route
+        addWaypoints: false,
         styles: [{ opacity: 0.8, weight: 6, color: "#3b82f6" }],
       },
       fitSelectedRoutes: true,
-      show: false, // Show the routing panel for better user interaction
-      draggableWaypoints: true, // Enable dragging waypoints
-      addWaypoints: false, // Allow adding waypoints by clicking on route
+      show: false,
+      draggableWaypoints: true,
+      addWaypoints: false,
       router: Routing.osrmv1({
         serviceUrl: "https://router.project-osrm.org/route/v1",
-        profile: "driving", // 'driving' | 'walking' | 'cycling'
+        profile: "driving",
       }),
-      createMarker: function (i: number, waypoint: Waypoint, n: number) {
-        // Custom markers that are draggable
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      createMarker: function (
+        i: number,
+        waypoint: LeafletWaypoint,
+        _n: number
+      ) {
         const marker = L.marker(waypoint.latLng, {
           draggable: true,
           icon: L.icon({
@@ -75,34 +80,29 @@ export default function PathRouting({
           }),
         });
 
-        // Add popup with waypoint info
-        const waypointNames = ["Start", "Waypoint", "End"];
-        const name =
-          i === 0
-            ? waypointNames[0]
-            : i === n - 1
-            ? waypointNames[2]
-            : `${waypointNames[1]} ${i}`;
-        marker.bindPopup(`${name}<br>Drag to customize your route!`);
+        // Get waypoint name from our waypoints array
+        const waypointName = waypoints[i]?.name || `Waypoint ${i + 1}`;
+        marker.bindPopup(`${waypointName}<br>Drag to customize your route!`);
 
         return marker;
       },
       routeWhileDragging: true,
     }).addTo(map);
 
-    // Emit route data to parent component
+    // Listen for waypoint changes (when user drags markers)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    routingControl.on("routesfound", (e: any) => {
-      const route = e.routes?.[0];
-      if (!route || !onRouteDataChange) return;
+    routingControl.on("waypointschanged", (e: any) => {
+      if (!onWaypointsChange) return;
 
-      const distanceMeters = route.summary?.totalDistance ?? 0;
-      const durationSeconds = route.summary?.totalTime ?? 0;
-      const polyline: [number, number][] =
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        route.coordinates?.map((c: any) => [c.lat, c.lng]) ?? [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const updatedWaypoints = e.waypoints.map((wp: any, index: number) => ({
+        id: waypoints[index]?.id || `waypoint-${index}`,
+        name: waypoints[index]?.name || `Waypoint ${index + 1}`,
+        lat: wp.latLng.lat,
+        lng: wp.latLng.lng,
+      }));
 
-      onRouteDataChange({ distanceMeters, durationSeconds, polyline });
+      onWaypointsChange(updatedWaypoints);
     });
 
     // Handle routing errors
@@ -116,7 +116,7 @@ export default function PathRouting({
         map.removeControl(routingControl);
       }
     };
-  }, [map, from, to, onRouteDataChange]);
+  }, [map, waypoints, onWaypointsChange]);
 
   return null;
 }

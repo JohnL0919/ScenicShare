@@ -3,14 +3,36 @@
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import L from "leaflet";
 import Button from "./components/Button";
 import ControlPanel from "./components/ControlPanel";
 import NavBar from "./components/NavBar";
 import PathRouting from "./components/PathRouting";
 
+interface Waypoint {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+}
+
 export default function PathCreatorPage() {
+  const [waypoints, setWaypoints] = useState<Waypoint[]>([
+    {
+      id: "start",
+      name: "Start",
+      lat: -33.8688,
+      lng: 151.2093,
+    },
+    {
+      id: "end",
+      name: "End",
+      lat: -33.9173,
+      lng: 151.2313,
+    },
+  ]);
+
   // Fix default marker icons in bundlers
   useEffect(() => {
     const iconDefault = L.icon({
@@ -77,15 +99,11 @@ export default function PathCreatorPage() {
         </div>
 
         {/* Control Panel */}
-        <ControlPanel
-          onRouteDataChange={(data) => {
-            console.log("Route data updated:", data);
-          }}
-        />
+        <ControlPanel waypoints={waypoints} onWaypointsChange={setWaypoints} />
 
         <MapContainer
-          center={[-33.8688, 151.2093]} // Center on Sydney Opera House
-          zoom={11} // Closer zoom to see Sydney area details
+          center={[-33.8688, 151.2093]}
+          zoom={5}
           scrollWheelZoom
           className="h-full w-full"
         >
@@ -95,12 +113,7 @@ export default function PathCreatorPage() {
             attribution="&copy; OpenStreetMap contributors &copy; CARTO"
           />
 
-          <PathRouting
-            onRouteDataChange={(data) => {
-              console.log("Route data updated:", data);
-              // You can pass this data to ControlPanel or other components
-            }}
-          />
+          <PathRouting waypoints={waypoints} onWaypointsChange={setWaypoints} />
         </MapContainer>
       </div>
     </>

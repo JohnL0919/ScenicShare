@@ -10,11 +10,8 @@ interface Waypoint {
   lng: number;
 }
 interface ControlPanelProps {
-  onRouteDataChange?: (data: {
-    title: string;
-    description: string;
-    waypoints: Waypoint[];
-  }) => void;
+  waypoints?: Waypoint[];
+  onWaypointsChange?: (waypoints: Waypoint[]) => void;
 }
 
 const Section: React.FC<{
@@ -41,10 +38,12 @@ const Section: React.FC<{
   );
 };
 
-export default function ControlPanel({ onRouteDataChange }: ControlPanelProps) {
+export default function ControlPanel({
+  waypoints = [],
+  onWaypointsChange,
+}: ControlPanelProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [waypoints, setWaypoints] = useState<Waypoint[]>([]);
   const [newWaypointName, setNewWaypointName] = useState("");
   const [open, setOpen] = useState(false); // drawer visibility
 
@@ -57,9 +56,6 @@ export default function ControlPanel({ onRouteDataChange }: ControlPanelProps) {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  const sync = (wps = waypoints, t = title, d = description) =>
-    onRouteDataChange?.({ title: t, description: d, waypoints: wps });
-
   const addWaypoint = () => {
     if (!newWaypointName.trim()) return;
     const wp: Waypoint = {
@@ -69,15 +65,13 @@ export default function ControlPanel({ onRouteDataChange }: ControlPanelProps) {
       lng: 151.2093 + (Math.random() - 0.5) * 0.1,
     };
     const updated = [...waypoints, wp];
-    setWaypoints(updated);
+    onWaypointsChange?.(updated);
     setNewWaypointName("");
-    sync(updated);
   };
 
   const removeWaypoint = (id: string) => {
     const updated = waypoints.filter((w) => w.id !== id);
-    setWaypoints(updated);
-    sync(updated);
+    onWaypointsChange?.(updated);
   };
 
   return (
@@ -132,10 +126,7 @@ export default function ControlPanel({ onRouteDataChange }: ControlPanelProps) {
                 type="text"
                 className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
                 value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                  sync(waypoints, e.target.value, description);
-                }}
+                onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter route title..."
               />
             </label>
@@ -148,10 +139,7 @@ export default function ControlPanel({ onRouteDataChange }: ControlPanelProps) {
                 rows={3}
                 className="w-full p-3 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 resize-y"
                 value={description}
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                  sync(waypoints, title, e.target.value);
-                }}
+                onChange={(e) => setDescription(e.target.value)}
                 placeholder="Describe your route..."
               />
             </label>
@@ -166,10 +154,19 @@ export default function ControlPanel({ onRouteDataChange }: ControlPanelProps) {
                     className="flex items-start gap-2 p-3 bg-gray-50 rounded-lg"
                   >
                     <div className="flex-1">
-                      <p className="text-sm font-medium">{w.name}</p>
-                      <p className="text-xs text-gray-500">
-                        {w.lat.toFixed(5)}, {w.lng.toFixed(5)}
+                      <p className="text-sm font-medium text-gray-800">
+                        {w.name}
                       </p>
+                      <div className="mt-1 space-y-0.5">
+                        <p className="text-xs text-gray-600">
+                          <span className="font-semibold">Lat:</span>{" "}
+                          {w.lat.toFixed(5)}
+                        </p>
+                        <p className="text-xs text-gray-600">
+                          <span className="font-semibold">Lng:</span>{" "}
+                          {w.lng.toFixed(5)}
+                        </p>
+                      </div>
                     </div>
                     <button
                       onClick={() => removeWaypoint(w.id)}
@@ -221,8 +218,20 @@ export default function ControlPanel({ onRouteDataChange }: ControlPanelProps) {
                 onClick={() => {
                   setTitle("");
                   setDescription("");
-                  setWaypoints([]);
-                  sync([]);
+                  onWaypointsChange?.([
+                    {
+                      id: "start",
+                      name: "Start",
+                      lat: -33.8688,
+                      lng: 151.2093,
+                    },
+                    {
+                      id: "end",
+                      name: "End",
+                      lat: -33.9173,
+                      lng: 151.2313,
+                    },
+                  ]);
                 }}
               />
             </div>
