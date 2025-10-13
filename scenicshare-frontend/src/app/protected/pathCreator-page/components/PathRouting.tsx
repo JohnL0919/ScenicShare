@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import L from "leaflet";
 import { useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -10,6 +10,18 @@ import "leaflet-routing-machine";
 // Type assertion for leaflet-routing-machine
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const LWithRouting = L as any;
+
+// Constants
+const MARKER_ICON_CONFIG = {
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconSize: [25, 41] as [number, number],
+  iconAnchor: [12, 41] as [number, number],
+  popupAnchor: [1, -34] as [number, number],
+  shadowSize: [41, 41] as [number, number],
+};
 
 interface Waypoint {
   id: string;
@@ -24,6 +36,9 @@ interface LeafletWaypoint {
   options?: Record<string, unknown>;
 }
 
+// Helper to create consistent marker icon
+const createMarkerIcon = () => L.icon(MARKER_ICON_CONFIG);
+
 interface PathRoutingProps {
   waypoints?: Waypoint[];
   onWaypointsChange?: (waypoints: Waypoint[]) => void;
@@ -34,38 +49,40 @@ export default function PathRouting({
   onWaypointsChange,
 }: PathRoutingProps) {
   const map = useMap();
+  const waypointsRef = useRef(waypoints);
+  const onWaypointsChangeRef = useRef(onWaypointsChange);
 
-  // Add double-click handler to add new waypoints
+  // Keep refs updated
+  useEffect(() => {
+    waypointsRef.current = waypoints;
+    onWaypointsChangeRef.current = onWaypointsChange;
+  }, [waypoints, onWaypointsChange]);
+
+  // Add double-click handler to add new waypoints (only registers once)
   useEffect(() => {
     if (!map) return;
 
     const dblclickHandler = (e: L.LeafletMouseEvent) => {
-      // Only add new waypoints if we have the handler
-      if (!onWaypointsChange) return;
+      if (!onWaypointsChangeRef.current) return;
 
-      console.log("Double-clicked at:", e.latlng);
-
-      // Create a new waypoint at the clicked location
+      const currentWaypoints = waypointsRef.current;
       const newWaypoint: Waypoint = {
-        id: `waypoint-${Date.now()}`, // Unique ID
-        name: `Waypoint ${waypoints.length + 1}`, // Default name
+        id: `waypoint-${Date.now()}`,
+        name: `Waypoint ${currentWaypoints.length + 1}`,
         lat: e.latlng.lat,
         lng: e.latlng.lng,
       };
 
-      // Add the new waypoint to existing waypoints
-      const updatedWaypoints = [...waypoints, newWaypoint];
-      onWaypointsChange(updatedWaypoints);
+      const updatedWaypoints = [...currentWaypoints, newWaypoint];
+      onWaypointsChangeRef.current(updatedWaypoints);
     };
 
-    // Add the double-click handler
     map.on("dblclick", dblclickHandler);
 
-    // Cleanup on unmount or when dependencies change
     return () => {
       map.off("dblclick", dblclickHandler);
     };
-  }, [map, waypoints, onWaypointsChange]);
+  }, [map]); // Only depends on map now
 
   // Display standalone markers when there are less than 2 waypoints
   useEffect(() => {
@@ -76,18 +93,7 @@ export default function PathRouting({
     waypoints.forEach((waypoint) => {
       const marker = L.marker([waypoint.lat, waypoint.lng], {
         draggable: true,
-        icon: L.icon({
-          iconUrl:
-            "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-          iconRetinaUrl:
-            "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-          shadowUrl:
-            "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-          iconSize: [25, 41],
-          iconAnchor: [12, 41],
-          popupAnchor: [1, -34],
-          shadowSize: [41, 41],
-        }),
+        icon: createMarkerIcon(),
       });
 
       marker.bindPopup(
@@ -112,7 +118,13 @@ export default function PathRouting({
     });
 
     return () => {
-      markers.forEach((marker) => map.removeLayer(marker));
+      markers.forEach((marker) => {
+        try {
+          map.removeLayer(marker);
+        } catch (error) {
+          console.warn("Error removing marker:", error);
+        }
+      });
     };
   }, [map, waypoints, onWaypointsChange]);
 
@@ -140,29 +152,12 @@ export default function PathRouting({
         serviceUrl: "https://router.project-osrm.org/route/v1",
         profile: "driving",
       }),
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      createMarker: function (
-        i: number,
-        waypoint: LeafletWaypoint,
-        _n: number
-      ) {
+      createMarker: (i: number, waypoint: LeafletWaypoint) => {
         const marker = L.marker(waypoint.latLng, {
           draggable: true,
-          icon: L.icon({
-            iconUrl:
-              "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-            iconRetinaUrl:
-              "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-            shadowUrl:
-              "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-            iconSize: [25, 41],
-            iconAnchor: [12, 41],
-            popupAnchor: [1, -34],
-            shadowSize: [41, 41],
-          }),
+          icon: createMarkerIcon(),
         });
 
-        // Get waypoint name from our waypoints array
         const waypointName = waypoints[i]?.name || `Waypoint ${i + 1}`;
         marker.bindPopup(`${waypointName}<br>Drag to customize your route!`);
 
@@ -190,12 +185,16 @@ export default function PathRouting({
     // Handle routing errors
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     routingControl.on("routingerror", (err: any) => {
-      console.warn("Routing error:", err);
+      console.warn("Routing error - check network or waypoint locations:", err);
     });
 
     return () => {
-      if (map && routingControl) {
-        map.removeControl(routingControl);
+      try {
+        if (map && routingControl) {
+          map.removeControl(routingControl);
+        }
+      } catch (error) {
+        console.warn("Error removing routing control:", error);
       }
     };
   }, [map, waypoints, onWaypointsChange]);
