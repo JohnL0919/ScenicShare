@@ -35,6 +35,38 @@ export default function PathRouting({
 }: PathRoutingProps) {
   const map = useMap();
 
+  // Add double-click handler to add new waypoints
+  useEffect(() => {
+    if (!map) return;
+
+    const dblclickHandler = (e: L.LeafletMouseEvent) => {
+      // Only add new waypoints if we have the handler
+      if (!onWaypointsChange) return;
+
+      console.log("Double-clicked at:", e.latlng);
+
+      // Create a new waypoint at the clicked location
+      const newWaypoint: Waypoint = {
+        id: `waypoint-${Date.now()}`, // Unique ID
+        name: `Waypoint ${waypoints.length + 1}`, // Default name
+        lat: e.latlng.lat,
+        lng: e.latlng.lng,
+      };
+
+      // Add the new waypoint to existing waypoints
+      const updatedWaypoints = [...waypoints, newWaypoint];
+      onWaypointsChange(updatedWaypoints);
+    };
+
+    // Add the double-click handler
+    map.on("dblclick", dblclickHandler);
+
+    // Cleanup on unmount or when dependencies change
+    return () => {
+      map.off("dblclick", dblclickHandler);
+    };
+  }, [map, waypoints, onWaypointsChange]);
+
   useEffect(() => {
     if (!map || waypoints.length < 2) return;
 
