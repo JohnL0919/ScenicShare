@@ -82,7 +82,26 @@ export default function PathRouting({
     return () => {
       map.off("dblclick", dblclickHandler);
     };
-  }, [map]); // Only depends on map now
+  }, [map]);
+
+  // Auto-zoom to fit all waypoints on mount or when waypoints change
+  useEffect(() => {
+    if (!map || waypoints.length === 0) return;
+
+    // If only one waypoint, center on it
+    if (waypoints.length === 1) {
+      map.setView([waypoints[0].lat, waypoints[0].lng], 13);
+      return;
+    }
+
+    // If multiple waypoints, fit bounds to show all
+    const bounds = L.latLngBounds(waypoints.map((wp) => [wp.lat, wp.lng]));
+
+    map.fitBounds(bounds, {
+      padding: [50, 50], // Add padding around edges
+      maxZoom: 15, // Don't zoom in too close
+    });
+  }, [map, waypoints]);
 
   // Display standalone markers when there are less than 2 waypoints
   useEffect(() => {
@@ -144,13 +163,14 @@ export default function PathRouting({
         addWaypoints: false,
         styles: [{ opacity: 0.8, weight: 6, color: "#3b82f6" }],
       },
-      fitSelectedRoutes: true,
+      fitSelectedRoutes: false, // Don't re-center map on route changes
       show: false,
       draggableWaypoints: true,
       addWaypoints: false,
       router: Routing.osrmv1({
         serviceUrl: "https://router.project-osrm.org/route/v1",
         profile: "driving",
+        timeout: 5000, // 5 second timeout
       }),
       createMarker: (i: number, waypoint: LeafletWaypoint) => {
         const marker = L.marker(waypoint.latLng, {
@@ -163,7 +183,7 @@ export default function PathRouting({
 
         return marker;
       },
-      routeWhileDragging: true,
+      routeWhileDragging: false, // Only route after drag completes
     }).addTo(map);
 
     // Listen for waypoint changes (when user drags markers)
