@@ -2,11 +2,24 @@
 
 import { useState } from "react";
 import SearchBar from "@/app/landing-page/components/SearchBar";
+import { useRouter } from "next/navigation";
 import Button from "@/app/landing-page/components/Button";
 import Link from "next/link";
+import { useAuth } from "@/contexts/authContexts";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/landing-page");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-black/30 rounded-lg shadow-lg mx-2 sm:mx-4 md:mx-8 lg:mx-20 mt-2">
@@ -34,15 +47,18 @@ export default function NavBar() {
           </div>
 
           <div className="hidden lg:flex lg:items-center lg:space-x-2 xl:space-x-4">
-            <div className="w-24">
-              <Button href="/logout-page" text="Log Out" size="compact" />
-            </div>
+            <button
+              onClick={handleLogout}
+              className="w-full px-4 py-2 text-sm font-medium text-white bg-blur hover:bg-red-700 rounded-lg transition-colors duration-200"
+            >
+              Log Out
+            </button>
           </div>
 
           <div className="lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-green-700 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-red-700 focus:outline-none"
             >
               <span className="sr-only">Open main menu</span>
             </button>
