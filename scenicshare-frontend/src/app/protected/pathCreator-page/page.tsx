@@ -1,77 +1,14 @@
 "use client";
 
-import { MapContainer, TileLayer, Popup, Marker, useMap } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-import "leaflet-routing-machine"; // <-- important: extends L with L.Routing
 
 import { useEffect } from "react";
 import L from "leaflet";
 import Button from "./components/Button";
 import ControlPanel from "./components/ControlPanel";
 import NavBar from "./components/NavBar";
-
-const p1: L.LatLngTuple = [-33.8688, 151.2093]; // Sydney
-const p2: L.LatLngTuple = [-37.8136, 144.9631]; // Melbourne
-
-function Routing({
-  from,
-  to,
-  onRouteDataChange,
-}: {
-  from: L.LatLngTuple;
-  to: L.LatLngTuple;
-  onRouteDataChange?: (data: {
-    distanceMeters: number;
-    durationSeconds: number;
-    polyline: [number, number][];
-  }) => void;
-}) {
-  const map = useMap();
-
-  useEffect(() => {
-    // TS: L.Routing is added by the side-effect import above
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Routing = (L as any).Routing;
-    if (!Routing) return;
-
-    const control = Routing.control({
-      waypoints: [L.latLng(from), L.latLng(to)],
-      lineOptions: { addWaypoints: false, styles: [{ opacity: 1, weight: 5 }] },
-      fitSelectedRoutes: true,
-      show: false,
-      router: Routing.osrmv1({
-        serviceUrl: "https://router.project-osrm.org/route/v1",
-        profile: "driving", // 'driving' | 'walking' | 'cycling'
-      }),
-      createMarker: () => null, // hide default markers (optional)
-    }).addTo(map);
-
-    // Emit summary + geometry to parent
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    control.on("routesfound", (e: any) => {
-      const route = e.routes?.[0];
-      if (!route || !onRouteDataChange) return;
-
-      const distanceMeters = route.summary?.totalDistance ?? 0;
-      const durationSeconds = route.summary?.totalTime ?? 0;
-      const polyline: [number, number][] =
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        route.coordinates?.map((c: any) => [c.lat, c.lng]) ?? [];
-
-      onRouteDataChange({ distanceMeters, durationSeconds, polyline });
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    control.on("routingerror", (err: any) => {
-      console.warn("Routing error:", err);
-    });
-
-    return () => control.remove();
-  }, [map, from, to, onRouteDataChange]);
-
-  return null;
-}
+import PathRouting from "./components/PathRouting";
 
 export default function PathCreatorPage() {
   // Fix default marker icons in bundlers
@@ -147,8 +84,8 @@ export default function PathCreatorPage() {
         />
 
         <MapContainer
-          center={p1}
-          zoom={6} // ← start wider; route will auto fit
+          center={[-33.8688, 151.2093]} // Center on Sydney Opera House
+          zoom={11} // Closer zoom to see Sydney area details
           scrollWheelZoom
           className="h-full w-full"
         >
@@ -158,20 +95,10 @@ export default function PathCreatorPage() {
             attribution="&copy; OpenStreetMap contributors &copy; CARTO"
           />
 
-          {/* Your own markers */}
-          <Marker position={p1}>
-            <Popup>Sydney, Australia</Popup>
-          </Marker>
-          <Marker position={p2}>
-            <Popup>Melbourne, Australia</Popup>
-          </Marker>
-
-          <Routing
-            from={p1}
-            to={p2}
+          <PathRouting
             onRouteDataChange={(data) => {
-              // bubble up to your ControlPanel if you want
-              console.log("Route summary:", data);
+              console.log("Route data updated:", data);
+              // You can pass this data to ControlPanel or other components
             }}
           />
         </MapContainer>
