@@ -163,7 +163,7 @@ export default function PathRouting({
         addWaypoints: false,
         styles: [{ opacity: 0.8, weight: 6, color: "#3b82f6" }],
       },
-      fitSelectedRoutes: false, // Don't re-center map on route changes
+      fitSelectedRoutes: false,
       show: false,
       draggableWaypoints: true,
       addWaypoints: false,
