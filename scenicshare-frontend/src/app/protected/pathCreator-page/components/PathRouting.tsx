@@ -67,6 +67,56 @@ export default function PathRouting({
     };
   }, [map, waypoints, onWaypointsChange]);
 
+  // Display standalone markers when there are less than 2 waypoints
+  useEffect(() => {
+    if (!map || waypoints.length >= 2) return;
+
+    const markers: L.Marker[] = [];
+
+    waypoints.forEach((waypoint) => {
+      const marker = L.marker([waypoint.lat, waypoint.lng], {
+        draggable: true,
+        icon: L.icon({
+          iconUrl:
+            "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+          iconRetinaUrl:
+            "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+          shadowUrl:
+            "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+          iconSize: [25, 41],
+          iconAnchor: [12, 41],
+          popupAnchor: [1, -34],
+          shadowSize: [41, 41],
+        }),
+      });
+
+      marker.bindPopup(
+        `${waypoint.name}<br>Double-click map to add more waypoints!`
+      );
+      marker.addTo(map);
+
+      // Handle marker drag
+      marker.on("dragend", () => {
+        if (!onWaypointsChange) return;
+
+        const newLatLng = marker.getLatLng();
+        const updatedWaypoints = waypoints.map((wp) =>
+          wp.id === waypoint.id
+            ? { ...wp, lat: newLatLng.lat, lng: newLatLng.lng }
+            : wp
+        );
+        onWaypointsChange(updatedWaypoints);
+      });
+
+      markers.push(marker);
+    });
+
+    return () => {
+      markers.forEach((marker) => map.removeLayer(marker));
+    };
+  }, [map, waypoints, onWaypointsChange]);
+
+  // Routing control for 2+ waypoints
   useEffect(() => {
     if (!map || waypoints.length < 2) return;
 
