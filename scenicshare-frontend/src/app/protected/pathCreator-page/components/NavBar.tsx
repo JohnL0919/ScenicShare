@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import Button from "@/app/landing-page/components/Button";
 import Link from "next/link";
 import { useAuth } from "@/contexts/authContexts";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +44,7 @@ export default function NavBar() {
             </div>
           </div>
 
-          <div className="hidden lg:block flex-grow mx-2 xl:mx-8">
+          <div className="hidden lg:flex flex-grow mx-2 xl:mx-8 justify-center items-center">
             <SearchBar />
           </div>
 
@@ -55,30 +57,59 @@ export default function NavBar() {
             </button>
           </div>
 
+          {/* Menu Button */}
           <div className="lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:bg-red-700 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-lg text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-200"
+              aria-expanded={isOpen}
+              aria-label={isOpen ? "Close menu" : "Open menu"}
             >
-              <span className="sr-only">Open main menu</span>
+              <div className="relative w-8 h-8 flex items-center justify-center">
+                <MenuIcon
+                  className={`absolute transition-all duration-300 ease-in-out ${
+                    isOpen
+                      ? "opacity-0 rotate-90 scale-0"
+                      : "opacity-100 rotate-0 scale-100"
+                  }`}
+                  sx={{ fontSize: 28 }}
+                />
+                <CloseIcon
+                  className={`absolute transition-all duration-300 ease-in-out ${
+                    isOpen
+                      ? "opacity-100 rotate-0 scale-100"
+                      : "opacity-0 -rotate-90 scale-0"
+                  }`}
+                  sx={{ fontSize: 28 }}
+                />
+              </div>
             </button>
           </div>
         </div>
       </div>
 
-      {isOpen && (
-        <div className="lg:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      {/* Mobile Menu */}
+      <div
+        className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="px-4 pt-2 pb-4 space-y-3 sm:px-6 border-t border-white/10">
+          <div className="py-2">
+            <SearchBar />
+          </div>
+          <div className="space-y-2">
             <Button text="Discover" />
             <Button text="My Routes" />
-            <Button text="Favourites" />
-            <div className="py-2">
-              <SearchBar />
-            </div>
-            <Button href="/registration-page" text="Join Us" />
           </div>
+          <button
+            onClick={handleLogout}
+            className="w-full px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200"
+          >
+            Log Out
+          </button>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
