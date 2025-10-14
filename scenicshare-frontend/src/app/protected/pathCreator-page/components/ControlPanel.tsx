@@ -342,17 +342,6 @@ export default function ControlPanel({
           </button>
         </div>
       </aside>
-
-      {/* Scrim on small screens when open */}
-      <div
-        className={`fixed inset-0 bg-black/30 z-[1001] lg:hidden transition-opacity ${
-          open
-            ? "opacity-100 pointer-events-auto"
-            : "opacity-0 pointer-events-none"
-        }`}
-        onClick={() => setOpen(false)}
-        aria-hidden
-      />
     </>
   );
 }
