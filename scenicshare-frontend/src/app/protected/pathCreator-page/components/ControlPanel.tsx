@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Button from "./Button";
+import { useAuth } from "@/contexts/authContexts";
+import { createRoute } from "@/services/routes";
 
 interface Waypoint {
   id: string;
@@ -46,6 +47,12 @@ export default function ControlPanel({
   const [description, setDescription] = useState("");
   const [newWaypointName, setNewWaypointName] = useState("");
   const [open, setOpen] = useState(false); // drawer visibility
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+  const { currentUser } = useAuth();
 
   // Open by default on desktop (>=1024px), closed on mobile/tablet
   useEffect(() => {
@@ -72,6 +79,64 @@ export default function ControlPanel({
   const removeWaypoint = (id: string) => {
     const updated = waypoints.filter((w) => w.id !== id);
     onWaypointsChange?.(updated);
+  };
+
+  const saveRoute = async () => {
+    // Validation
+    if (!title.trim()) {
+      setSaveMessage({ type: "error", text: "Please enter a route title" });
+      setTimeout(() => setSaveMessage(null), 3000);
+      return;
+    }
+
+    if (waypoints.length < 2) {
+      setSaveMessage({
+        type: "error",
+        text: "Please add at least 2 waypoints",
+      });
+      setTimeout(() => setSaveMessage(null), 3000);
+      return;
+    }
+
+    if (!currentUser?.uid) {
+      setSaveMessage({ type: "error", text: "You must be logged in" });
+      setTimeout(() => setSaveMessage(null), 3000);
+      return;
+    }
+
+    setSaving(true);
+    setSaveMessage(null);
+
+    try {
+      const routeId = await createRoute(
+        title,
+        description,
+        waypoints,
+        currentUser.uid
+      );
+
+      console.log("✅ Route saved successfully with ID:", routeId);
+
+      setSaveMessage({
+        type: "success",
+        text: "Route saved successfully!",
+      });
+      setTimeout(() => setSaveMessage(null), 3000);
+
+      // Optional: Reset form after successful save
+      // setTitle("");
+      // setDescription("");
+      // onWaypointsChange?.([]);
+    } catch (error) {
+      console.error("❌ Error saving route:", error);
+      setSaveMessage({
+        type: "error",
+        text: "Failed to save route. Please try again.",
+      });
+      setTimeout(() => setSaveMessage(null), 3000);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -182,17 +247,99 @@ export default function ControlPanel({
             )}
           </Section>
 
-          <Button
-            variant="primary"
-            text="Save Route"
-            onClick={() =>
-              console.log("Saving route:", {
-                title,
-                description,
-                waypoints,
-              })
-            }
-          />
+          {saveMessage && (
+            <div
+              className={`p-3 rounded-lg text-sm font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300 ${
+                saveMessage.type === "success"
+                  ? "bg-green-50 text-green-800 border border-green-200"
+                  : "bg-red-50 text-red-800 border border-red-200"
+              }`}
+            >
+              {saveMessage.type === "success" ? (
+                <svg
+                  className="w-5 h-5 flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  className="w-5 h-5 flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              )}
+              <span>{saveMessage.text}</span>
+            </div>
+          )}
+
+          <button
+            onClick={saveRoute}
+            disabled={saving}
+            className={`
+              w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-semibold text-sm
+              transform transition-all duration-200 ease-out shadow-sm
+              ${
+                saving
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-green-600 text-white hover:bg-green-700 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              }
+            `}
+          >
+            {saving ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                <span>Saving Route...</span>
+              </>
+            ) : (
+              <>
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                  />
+                </svg>
+                <span>Save Route</span>
+              </>
+            )}
+          </button>
         </div>
       </aside>
 
