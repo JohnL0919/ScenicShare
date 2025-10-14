@@ -12,7 +12,7 @@ export interface Waypoint {
 }
 
 /**
- * Create a new route with waypoints
+ * -=-=-=-=-=-=-=-=-=-=-=-=- Create a new route with waypoints -=-=-=-=-=-=-=-=--=-=-=-=--=-=-
  */
 export async function createRoute(
   title: string,
