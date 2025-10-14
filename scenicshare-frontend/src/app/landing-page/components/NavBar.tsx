@@ -4,7 +4,8 @@ import { useState } from "react";
 import Button from "./Button";
 import SearchBar from "./SearchBar";
 import Link from "next/link";
-
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +14,6 @@ export default function NavBar() {
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-black/30 rounded-lg shadow-lg mx-2 sm:mx-4 md:mx-8 lg:mx-20 mt-2">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-
           <div className="flex-shrink-0 flex items-center">
             <h1 className="text-xl sm:text-2xl font-bold text-white">
               <Link href="/landing-page">
@@ -31,10 +31,9 @@ export default function NavBar() {
             </div>
           </div>
 
-          <div className="hidden lg:block flex-grow mx-2 xl:mx-8">
+          <div className="hidden lg:flex flex-grow mx-2 xl:mx-8 justify-center items-center">
             <SearchBar />
           </div>
-
 
           <div className="hidden lg:flex lg:items-center lg:space-x-2 xl:space-x-4">
             <div className="w-20">
@@ -54,33 +53,57 @@ export default function NavBar() {
             </div>
           </div>
 
+          {/* Menu Button */}
           <div className="lg:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-white hover:text-green-700 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-lg text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-200"
+              aria-expanded={isOpen}
+              aria-label={isOpen ? "Close menu" : "Open menu"}
             >
-              <span className="sr-only">Open main menu</span>
-
+              <div className="relative w-8 h-8 flex items-center justify-center">
+                <MenuIcon
+                  className={`absolute transition-all duration-300 ease-in-out ${
+                    isOpen
+                      ? "opacity-0 rotate-90 scale-0"
+                      : "opacity-100 rotate-0 scale-100"
+                  }`}
+                  sx={{ fontSize: 28 }}
+                />
+                <CloseIcon
+                  className={`absolute transition-all duration-300 ease-in-out ${
+                    isOpen
+                      ? "opacity-100 rotate-0 scale-100"
+                      : "opacity-0 -rotate-90 scale-0"
+                  }`}
+                  sx={{ fontSize: 28 }}
+                />
+              </div>
             </button>
           </div>
         </div>
       </div>
 
-      {isOpen && (
-        <div className="lg:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      {/* Mobile Menu */}
+      <div
+        className={`lg:hidden overflow-hidden transition-all duration-300 ease-in-out ${
+          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <div className="px-4 pt-2 pb-4 space-y-3 sm:px-6 border-t border-white/10">
+          <div className="py-2">
+            <SearchBar />
+          </div>
+          <div className="space-y-2">
             <Button text="Discover" />
             <Button text="My Routes" />
-            <Button text="Favourites" />
-            <div className="py-2">
-              <SearchBar />
-            </div>
+          </div>
+          <div className="space-y-2 pt-2">
             <Button href="/login-page" text="Share +" variant="primary" />
-            <Button href="/registration-page" text="Join Us" />
-
+            <Button href="/registration-page" text="Join Today" />
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
