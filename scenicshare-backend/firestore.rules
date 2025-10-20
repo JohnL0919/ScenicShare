@@ -2,18 +2,49 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2025, 10, 16);
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user owns the resource
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    // Routes (Paths) collection
+    match /Paths/{pathId} {
+      // Anyone can read routes (for discovery)
+      allow read: if true;
+      
+      // Only authenticated users can create routes
+      allow create: if isAuthenticated() 
+                    && request.resource.data.creatorID == request.auth.uid;
+      
+      // Only the creator can update or delete their routes
+      allow update, delete: if isAuthenticated() 
+                            && resource.data.creatorID == request.auth.uid;
+      
+      // Waypoints subcollection
+      match /waypoints/{waypointId} {
+        // Anyone can read waypoints (for viewing routes)
+        allow read: if true;
+        
+        // Only authenticated users can create waypoints for their routes
+        allow create: if isAuthenticated() 
+                      && request.resource.data.creatorID == request.auth.uid;
+        
+        // Only the creator can update or delete waypoints
+        allow update, delete: if isAuthenticated() 
+                              && resource.data.creatorID == request.auth.uid;
+      }
+    }
+    
+    // Users collection (if you add user profiles later)
+    match /Users/{userId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && request.auth.uid == userId;
     }
   }
 }
