@@ -113,7 +113,11 @@ export default function DiscoverOrShare() {
         </div>
         <div className="flex justify-center mt-12 mb-8">
           <div className="w-64">
-            <Button text="Share Your Route" variant="primary" />
+            <Button
+              href="/login-page"
+              text="Share Your Route"
+              variant="primary"
+            />
           </div>
         </div>
       </div>
