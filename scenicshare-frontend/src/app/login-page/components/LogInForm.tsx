@@ -1,23 +1,40 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Input from "../../registration-page/components/Input";
 import { loginUserWithEmailAndPassword } from "@/lib/firebase/Authentication/EmailAuth";
+import { useAuth } from "@/contexts/authContexts";
 
 export default function LogInForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const { userLoggedIn } = useAuth();
+
+  // Use useEffect for navigation instead of doing it during render
+  useEffect(() => {
+    if (userLoggedIn) {
+      router.push("/protected/home-page");
+    }
+  }, [userLoggedIn, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {
       await loginUserWithEmailAndPassword(email, password);
+      // Navigation will happen automatically through auth state change
     } finally {
       setIsLoading(false);
     }
   };
+
+  // Don't render the form if the user is already logged in
+  if (userLoggedIn) {
+    return <div className="text-center mt-10">Redirecting to home page...</div>;
+  }
 
   if (isLoading) {
     return (

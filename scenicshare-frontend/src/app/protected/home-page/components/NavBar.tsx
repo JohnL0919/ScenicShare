@@ -1,14 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import Button from "./Button";
-import SearchBar from "./SearchBar";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/authContexts";
+import SearchBar from "@/app/landing-page/components/SearchBar";
+import Button from "@/app/landing-page/components/Button";
 import Link from "next/link";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      router.push("/landing-page");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-black/30 rounded-lg shadow-lg mx-2 sm:mx-4 md:mx-8 lg:mx-20 mt-2">
@@ -36,20 +49,13 @@ export default function NavBar() {
           </div>
 
           <div className="hidden lg:flex lg:items-center lg:space-x-2 xl:space-x-4">
-            <div className="w-20">
-              <Button
-                href="/login-page"
-                text="Share +"
-                variant="primary"
-                size="compact"
-              />
-            </div>
             <div className="w-24">
-              <Button
-                href="/registration-page"
-                text="Join Today"
-                size="compact"
-              />
+              <button
+                onClick={handleLogout}
+                className="w-full px-3 py-2 text-sm font-medium text-white bg-blur hover:bg-red-700 rounded-lg transition-colors duration-200"
+              >
+                Log Out
+              </button>
             </div>
           </div>
 
@@ -98,10 +104,12 @@ export default function NavBar() {
             <Button text="Discover" />
             <Button text="My Routes" />
           </div>
-          <div className="space-y-2 pt-2">
-            <Button href="/login-page" text="Share +" variant="primary" />
-            <Button href="/registration-page" text="Join Today" />
-          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200"
+          >
+            Log Out
+          </button>
         </div>
       </div>
     </nav>
