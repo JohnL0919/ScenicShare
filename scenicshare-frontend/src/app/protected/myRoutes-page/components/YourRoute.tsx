@@ -8,16 +8,25 @@ import Card from "@mui/joy/Card";
 import CardContent from "@mui/joy/CardContent";
 import Typography from "@mui/joy/Typography";
 import CircularProgress from "@mui/joy/CircularProgress";
-import { getUserRoutes, PathData } from "@/services/routes";
+import IconButton from "@mui/joy/IconButton";
+import Modal from "@mui/joy/Modal";
+import ModalDialog from "@mui/joy/ModalDialog";
+import ModalClose from "@mui/joy/ModalClose";
+import Button from "@mui/joy/Button";
+import { getUserRoutes, PathData, deleteRoute } from "@/services/routes";
 import { useAuth } from "@/contexts/authContexts";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import RouteIcon from "@mui/icons-material/Route";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function YourRoute() {
   const { currentUser } = useAuth();
   const [routes, setRoutes] = useState<PathData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [routeToDelete, setRouteToDelete] = useState<PathData | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -59,6 +68,40 @@ export default function YourRoute() {
 
     fetchRoutes();
   }, [currentUser]);
+
+  const handleDeleteClick = (route: PathData, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click event
+    setRouteToDelete(route);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!routeToDelete || !currentUser?.uid) return;
+
+    setDeleting(true);
+    try {
+      await deleteRoute(routeToDelete.id, currentUser.uid);
+
+      // Remove the route from local state
+      setRoutes((prevRoutes) =>
+        prevRoutes.filter((r) => r.id !== routeToDelete.id)
+      );
+
+      setDeleteModalOpen(false);
+      setRouteToDelete(null);
+    } catch (err) {
+      console.error("Error deleting route:", err);
+      const error = err as { message?: string };
+      alert(error?.message || "Failed to delete route. Please try again.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModalOpen(false);
+    setRouteToDelete(null);
+  };
 
   if (loading) {
     return (
@@ -118,9 +161,33 @@ export default function YourRoute() {
                       transform: "scale(1.02)",
                       transition: "all 0.3s ease",
                       cursor: "pointer",
+                      "& .delete-button": {
+                        opacity: 1,
+                      },
                     },
                   }}
                 >
+                  {/* Delete Button */}
+                  <IconButton
+                    className="delete-button"
+                    onClick={(e) => handleDeleteClick(route, e)}
+                    sx={{
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      zIndex: 10,
+                      bgcolor: "rgba(255, 255, 255, 0.9)",
+                      opacity: 0,
+                      transition: "opacity 0.3s ease",
+                      "&:hover": {
+                        bgcolor: "rgba(255, 0, 0, 0.1)",
+                        color: "red",
+                      },
+                    }}
+                    size="sm"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                   <Box
                     sx={{
                       position: "relative",
@@ -197,6 +264,48 @@ export default function YourRoute() {
           })}
         </Grid>
       </Box>
+
+      {/* Delete Confirmation Modal */}
+      <Modal open={deleteModalOpen} onClose={handleDeleteCancel}>
+        <ModalDialog
+          variant="outlined"
+          role="alertdialog"
+          sx={{
+            maxWidth: 500,
+            borderRadius: "md",
+            p: 3,
+            boxShadow: "lg",
+          }}
+        >
+          <ModalClose />
+          <Typography level="h4" sx={{ mb: 1 }}>
+            Delete Route
+          </Typography>
+          <Typography level="body-md" sx={{ mb: 3 }}>
+            Are you sure you want to delete &quot;{routeToDelete?.title}&quot;?
+            This action cannot be undone and will delete all waypoints
+            associated with this route.
+          </Typography>
+          <Box sx={{ display: "flex", gap: 1, justifyContent: "flex-end" }}>
+            <Button
+              variant="plain"
+              color="neutral"
+              onClick={handleDeleteCancel}
+              disabled={deleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="solid"
+              color="danger"
+              onClick={handleDeleteConfirm}
+              loading={deleting}
+            >
+              Delete Route
+            </Button>
+          </Box>
+        </ModalDialog>
+      </Modal>
     </div>
   );
 }

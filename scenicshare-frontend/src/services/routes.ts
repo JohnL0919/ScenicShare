@@ -5,6 +5,7 @@ import {
   doc,
   setDoc,
   getDocs,
+  deleteDoc,
   getCountFromServer,
   query,
   where,
@@ -140,6 +141,36 @@ export async function getUserRoutes(
   } catch (error) {
     console.error("Error fetching user routes:", error);
     console.error("Error details:", JSON.stringify(error, null, 2));
+    throw error;
+  }
+}
+
+/**
+ * -=-=-=-=-=-=-=-=-=-=-=-=- Delete a route and all its waypoints -=-=-=-=-=-=-=-=--=-=-=-=--=-=-
+ */
+export async function deleteRoute(
+  pathId: string,
+  userId: string
+): Promise<void> {
+  try {
+    console.log("Deleting route:", pathId, "for user:", userId);
+
+    // First, delete all waypoints in the subcollection
+    const waypointsRef = collection(doc(db, "Paths", pathId), "waypoints");
+    const waypointsSnapshot = await getDocs(waypointsRef);
+
+    const deleteWaypointPromises = waypointsSnapshot.docs.map((wpDoc) =>
+      deleteDoc(doc(db, "Paths", pathId, "waypoints", wpDoc.id))
+    );
+
+    await Promise.all(deleteWaypointPromises);
+    console.log(`Deleted ${waypointsSnapshot.size} waypoints`);
+
+    // Then delete the main path document
+    await deleteDoc(doc(db, "Paths", pathId));
+    console.log("Route deleted successfully");
+  } catch (error) {
+    console.error("Error deleting route:", error);
     throw error;
   }
 }
