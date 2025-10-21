@@ -2,7 +2,7 @@ import NavBar from "@/app/protected/myRoutes-page/components/NavBar";
 import Image from "next/image";
 import Header from "@/app/protected/myRoutes-page/components/Header";
 import Footer from "./components/Footer";
-import DiscoverRoute from "./components/DiscoverRoute";
+import YourRoute from "./components/YourRoute";
 
 export default function MyRoutes() {
   return (
@@ -24,7 +24,7 @@ export default function MyRoutes() {
       <main className="relative z-10 flex-grow">
         <NavBar />
         <Header />
-        <DiscoverRoute />
+        <YourRoute />
       </main>
       <div className="relative z-10">
         <Footer />

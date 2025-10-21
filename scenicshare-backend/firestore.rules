@@ -2,18 +2,44 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
-    match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2025, 10, 16);
+    
+    // Helper function to check authentication
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user owns the resource
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Users collection - users can read/write their own data
+    match /Users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // Paths collection - authenticated users can create, owners can manage
+    match /Paths/{pathId} {
+      // Anyone authenticated can read paths (for discovery)
+      allow read: if isAuthenticated();
+      
+      // Only authenticated users can create paths
+      allow create: if isAuthenticated() 
+        && request.resource.data.creatorID == request.auth.uid;
+      
+      // Only the creator can update or delete their paths
+      allow update, delete: if isAuthenticated() 
+        && resource.data.creatorID == request.auth.uid;
+      
+      // Waypoints subcollection
+      match /waypoints/{waypointId} {
+        // Anyone authenticated can read waypoints
+        allow read: if isAuthenticated();
+        
+        // Only path creator can write waypoints
+        allow write: if isAuthenticated() 
+          && get(/databases/$(database)/documents/Paths/$(pathId)).data.creatorID == request.auth.uid;
+      }
     }
   }
 }

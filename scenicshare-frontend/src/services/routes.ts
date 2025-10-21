@@ -1,5 +1,15 @@
 import { db } from "@/lib/firebase";
-import { collection, addDoc, doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  setDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 
 export interface Waypoint {
   id: string;
@@ -9,6 +19,16 @@ export interface Waypoint {
   order?: number;
   city?: string;
   state?: string;
+}
+
+export interface PathData {
+  id: string;
+  title: string;
+  description: string;
+  creatorID: string;
+  createdAt: Date;
+  waypointCount: number;
+  waypoints?: Waypoint[];
 }
 
 /**
@@ -52,6 +72,124 @@ export async function createRoute(
     return pathDoc.id;
   } catch (error) {
     console.error("Error creating route:", error);
+    throw error;
+  }
+}
+
+/**
+ * -=-=-=-=-=-=-=-=-=-=-=-=- Get user's routes -=-=-=-=-=-=-=-=--=-=-=-=--=-=-
+ */
+export async function getUserRoutes(
+  userId: string,
+  limitCount: number = 6
+): Promise<PathData[]> {
+  try {
+    console.log("Fetching routes for userId:", userId);
+    const pathsRef = collection(db, "Paths");
+
+    // Query with where clause only (orderBy requires composite index)
+    // We'll sort in memory instead
+    const q = query(
+      pathsRef,
+      where("creatorID", "==", userId),
+      limit(limitCount)
+    );
+
+    const querySnapshot = await getDocs(q);
+    console.log("Found documents:", querySnapshot.size);
+    const paths: PathData[] = [];
+
+    for (const docSnapshot of querySnapshot.docs) {
+      const data = docSnapshot.data();
+      console.log("Processing path:", docSnapshot.id, data);
+
+      // Fetch waypoints for this path
+      const waypointsRef = collection(
+        doc(db, "Paths", docSnapshot.id),
+        "waypoints"
+      );
+      const waypointsSnapshot = await getDocs(waypointsRef);
+      const waypoints: Waypoint[] = waypointsSnapshot.docs.map(
+        (wpDoc) =>
+          ({
+            id: wpDoc.id,
+            ...wpDoc.data(),
+          } as Waypoint)
+      );
+
+      // Sort waypoints by order
+      waypoints.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+      paths.push({
+        id: docSnapshot.id,
+        title: data.title,
+        description: data.description,
+        creatorID: data.creatorID,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        waypointCount: data.waypointCount,
+        waypoints,
+      });
+    }
+
+    // Sort by createdAt in memory (descending - newest first)
+    paths.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    console.log("Returning paths:", paths.length);
+    return paths;
+  } catch (error) {
+    console.error("Error fetching user routes:", error);
+    console.error("Error details:", JSON.stringify(error, null, 2));
+    throw error;
+  }
+}
+
+/**
+ * -=-=-=-=-=-=-=-=-=-=-=-=- Get all public routes -=-=-=-=-=-=-=-=--=-=-=-=--=-=-
+ */
+export async function getAllRoutes(
+  limitCount: number = 6
+): Promise<PathData[]> {
+  try {
+    const pathsRef = collection(db, "Paths");
+    const q = query(pathsRef, orderBy("createdAt", "desc"), limit(limitCount));
+
+    const querySnapshot = await getDocs(q);
+    const paths: PathData[] = [];
+
+    for (const docSnapshot of querySnapshot.docs) {
+      const data = docSnapshot.data();
+
+      // Fetch waypoints for this path
+      const waypointsRef = collection(
+        doc(db, "Paths", docSnapshot.id),
+        "waypoints"
+      );
+      const waypointsSnapshot = await getDocs(waypointsRef);
+      const waypoints: Waypoint[] = waypointsSnapshot.docs.map(
+        (wpDoc) =>
+          ({
+            id: wpDoc.id,
+            ...wpDoc.data(),
+          } as Waypoint)
+      );
+
+      // Sort waypoints by order
+      waypoints.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+      paths.push({
+        id: docSnapshot.id,
+        title: data.title,
+        description: data.description,
+        creatorID: data.creatorID,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        waypointCount: data.waypointCount,
+        waypoints,
+      });
+    }
+
+    return paths;
+  } catch (error) {
+    console.error("Error fetching routes:", error);
     throw error;
   }
 }
