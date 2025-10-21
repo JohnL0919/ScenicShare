@@ -37,6 +37,9 @@ export default function NavBar() {
 
           <div className="hidden lg:flex lg:items-center lg:space-x-3 xl:space-x-4 ml-2 xl:ml-5">
             <div className="w-24">
+              <Button href="/protected/home-page" text="Home" size="compact" />
+            </div>
+            <div className="w-24">
               <Button text="Discover" size="compact" />
             </div>
             <div className="w-24">
@@ -105,6 +108,7 @@ export default function NavBar() {
             <SearchBar />
           </div>
           <div className="space-y-2">
+            <Button href="/protected/home-page" text="Home" />
             <Button text="Discover" />
             <Button href="/protected/myRoutes-page" text="My Routes" />
           </div>
