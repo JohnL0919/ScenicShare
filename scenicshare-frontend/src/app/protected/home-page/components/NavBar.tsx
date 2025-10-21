@@ -40,7 +40,11 @@ export default function NavBar() {
               <Button text="Discover" size="compact" />
             </div>
             <div className="w-24">
-              <Button href="/myRoutes-page" text="My Routes" size="compact" />
+              <Button
+                href="/protected/myRoutes-page"
+                text="My Routes"
+                size="compact"
+              />
             </div>
           </div>
 
@@ -102,7 +106,7 @@ export default function NavBar() {
           </div>
           <div className="space-y-2">
             <Button text="Discover" />
-            <Button href="/myRoutes-page" text="My Routes" />
+            <Button href="/protected/myRoutes-page" text="My Routes" />
           </div>
           <button
             onClick={handleLogout}

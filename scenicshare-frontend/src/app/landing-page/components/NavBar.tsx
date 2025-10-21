@@ -27,7 +27,11 @@ export default function NavBar() {
               <Button text="Discover" size="compact" />
             </div>
             <div className="w-24">
-              <Button href="/myRoutes-page" text="My Routes" size="compact" />
+              <Button
+                href="/protected/myRoutes-page"
+                text="My Routes"
+                size="compact"
+              />
             </div>
           </div>
 
