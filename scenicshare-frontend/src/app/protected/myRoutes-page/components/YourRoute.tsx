@@ -18,6 +18,7 @@ import { useAuth } from "@/contexts/authContexts";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import RouteIcon from "@mui/icons-material/Route";
 import DeleteIcon from "@mui/icons-material/Delete";
+import NavigationIcon from "@mui/icons-material/Navigation";
 
 export default function YourRoute() {
   const { currentUser } = useAuth();
@@ -103,6 +104,36 @@ export default function YourRoute() {
     setRouteToDelete(null);
   };
 
+  const generateGoogleMapsUrl = (route: PathData): string => {
+    if (!route.waypoints || route.waypoints.length < 2) {
+      return "";
+    }
+
+    // Get start and end waypoints
+    const startWaypoint = route.waypoints[0];
+    const endWaypoint = route.waypoints[route.waypoints.length - 1];
+
+    // If there are intermediate waypoints, include them
+    if (route.waypoints.length > 2) {
+      const intermediateWaypoints = route.waypoints
+        .slice(1, -1)
+        .map((wp) => `${wp.lat},${wp.lng}`)
+        .join("|");
+
+      return `https://www.google.com/maps/dir/?api=1&origin=${startWaypoint.lat},${startWaypoint.lng}&destination=${endWaypoint.lat},${endWaypoint.lng}&waypoints=${intermediateWaypoints}&travelmode=driving`;
+    }
+
+    // Simple start to end route
+    return `https://www.google.com/maps/dir/?api=1&origin=${startWaypoint.lat},${startWaypoint.lng}&destination=${endWaypoint.lat},${endWaypoint.lng}&travelmode=driving`;
+  };
+
+  const handleRouteClick = (route: PathData) => {
+    const mapsUrl = generateGoogleMapsUrl(route);
+    if (mapsUrl) {
+      window.open(mapsUrl, "_blank");
+    }
+  };
+
   if (loading) {
     return (
       <div className="mt-8 px-4 md:px-8 lg:px-16 flex justify-center items-center min-h-[400px]">
@@ -162,11 +193,12 @@ export default function YourRoute() {
                     overflow: "hidden",
                     borderRadius: "8px",
                     p: 0,
+                    display: "flex",
+                    flexDirection: "column",
                     "&:hover": {
                       boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
                       transform: "scale(1.02)",
                       transition: "all 0.3s ease",
-                      cursor: "pointer",
                       "& .delete-button": {
                         opacity: 1,
                       },
@@ -213,7 +245,14 @@ export default function YourRoute() {
                       sx={{ fontSize: 64, color: "white", opacity: 0.7 }}
                     />
                   </Box>
-                  <CardContent sx={{ p: 2 }}>
+                  <CardContent
+                    sx={{
+                      p: 2,
+                      flex: 1,
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
                     <Typography level="title-lg" sx={{ mb: 0.5 }}>
                       {route.title}
                     </Typography>
@@ -244,7 +283,7 @@ export default function YourRoute() {
                       sx={{
                         display: "flex",
                         justifyContent: "space-between",
-                        mb: 1,
+                        mb: 2,
                       }}
                     >
                       <Box
@@ -263,6 +302,23 @@ export default function YourRoute() {
                         {new Date(route.createdAt).toLocaleDateString()}
                       </Typography>
                     </Box>
+
+                    {/* Start Navigation Button */}
+                    <Button
+                      variant="solid"
+                      color="primary"
+                      startDecorator={<NavigationIcon />}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRouteClick(route);
+                      }}
+                      sx={{
+                        mt: "auto",
+                        width: "100%",
+                      }}
+                    >
+                      Start Navigation
+                    </Button>
                   </CardContent>
                 </Card>
               </Grid>
