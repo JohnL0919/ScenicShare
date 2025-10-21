@@ -124,7 +124,13 @@ export default function YourRoute() {
   if (routes.length === 0) {
     return (
       <div className="mt-8 px-4 md:px-8 lg:px-16">
-        <Typography level="body-lg" className="text-center text-gray-500">
+        <Typography
+          level="body-lg"
+          sx={{
+            textAlign: "center",
+            color: "white",
+          }}
+        >
           You haven&apos;t created any routes yet. Start creating your first
           scenic route!
         </Typography>
