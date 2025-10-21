@@ -25,10 +25,10 @@ export default function Header() {
   }, []);
 
   return (
-    <div className="grid grid-cols-2 px-4 sm:px-6 lg:px-8 w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto mt-20 sm:mt-28 lg:mt-32">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 px-4 sm:px-6 lg:px-8 w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto mt-20 sm:mt-28 lg:mt-32">
       {/* Left column - Welcome text */}
       <div className="flex flex-col">
-        <h1 className=" text-3xl sm:text-4xl md:text-5xl lg:text-5xl mt-3">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl mt-3">
           Your Routes
           <br />
         </h1>
@@ -37,7 +37,7 @@ export default function Header() {
           Explore breathtaking routes curated by fellow adventurers. Your next
           journey awaits.
         </h5>
-        <div className=" w-64">
+        <div className="w-full sm:w-64">
           <Button
             variant="primary"
             href="/protected/pathCreator-page"
@@ -63,7 +63,7 @@ export default function Header() {
       </div>
 
       {/* Right column - Stats */}
-      <div>
+      <div className="order-first md:order-last">
         <StatsDisplay />
       </div>
     </div>
