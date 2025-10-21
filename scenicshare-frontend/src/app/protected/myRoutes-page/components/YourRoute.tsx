@@ -136,7 +136,7 @@ export default function YourRoute() {
 
   if (loading) {
     return (
-      <div className="mt-8 px-4 md:px-8 lg:px-16 flex justify-center items-center min-h-[400px]">
+      <div className="w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto mt-8 px-4 sm:px-6 lg:px-8 flex justify-center items-center min-h-[400px]">
         <CircularProgress size="lg" />
       </div>
     );
@@ -144,7 +144,7 @@ export default function YourRoute() {
 
   if (error) {
     return (
-      <div className="mt-8 px-4 md:px-8 lg:px-16">
+      <div className="w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto mt-8 px-4 sm:px-6 lg:px-8">
         <Typography level="body-lg" color="danger" className="text-center">
           {error}
         </Typography>
@@ -154,7 +154,7 @@ export default function YourRoute() {
 
   if (routes.length === 0) {
     return (
-      <div className="mt-8 px-4 md:px-8 lg:px-16">
+      <div className="w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto mt-8 px-4 sm:px-6 lg:px-8">
         <Typography
           level="body-lg"
           sx={{
@@ -170,8 +170,8 @@ export default function YourRoute() {
   }
 
   return (
-    <div className="mt-8 px-4 md:px-8 lg:px-16">
-      <Box sx={{ flexGrow: 1, p: 2 }}>
+    <div className="w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto mt-8 px-4 sm:px-6 lg:px-8">
+      <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2} sx={{ flexGrow: 1 }}>
           {routes.map((route) => {
             const firstWaypoint = route.waypoints?.[0];
