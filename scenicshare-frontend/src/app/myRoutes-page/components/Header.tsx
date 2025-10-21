@@ -1,14 +1,71 @@
-export default function Header() {
-  return (
-    <div className="px-4 sm:px-6 lg:px-8 text-left mt-24 sm:mt-28 lg:mt-32 w-full sm:w-[70%] md:w-[60%] lg:w-[50%] xl:w-[40%] mx-auto lg:mx-20">
-      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl">
-        Your Routes{" "}
-      </h1>
+"use client";
 
-      <h5 className="my-3 sm:my-5 text-sm sm:text-base">
-        Manage and track your shared scenic drives
-      </h5>
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 w-full"></div>
+import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
+import { auth } from "@/lib/firebase";
+import StatsDisplay from "./StatsDisplay";
+import Button from "@/app/protected/home-page/components/Button";
+
+export default function Header() {
+  const [displayName, setDisplayName] = useState<string | null>(null);
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setEmail(user.email);
+        setDisplayName(user.displayName);
+      } else {
+        setEmail(null);
+        setDisplayName(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  return (
+    <div className="grid grid-cols-2 px-4 sm:px-6 lg:px-8 w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto mt-20 sm:mt-28 lg:mt-32">
+      {/* Left column - Welcome text */}
+      <div className="flex flex-col">
+        <h1 className="font-bold text-3xl sm:text-4xl md:text-5xl lg:text-5xl mt-3">
+          Your Routes
+          <br />
+        </h1>
+
+        <h5 className="my-3 sm:my-5 text-sm sm:text-base">
+          Explore breathtaking routes curated by fellow adventurers. Your next
+          journey awaits.
+        </h5>
+        <div className=" w-64">
+          <Button
+            variant="primary"
+            href="/protected/pathCreator-page"
+            text={
+              <div className="flex items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Create New Path
+              </div>
+            }
+          />
+        </div>
+      </div>
+
+      {/* Right column - Stats */}
+      <div>
+        <StatsDisplay />
+      </div>
     </div>
   );
 }
