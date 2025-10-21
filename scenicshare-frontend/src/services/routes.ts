@@ -5,6 +5,7 @@ import {
   doc,
   setDoc,
   getDocs,
+  getCountFromServer,
   query,
   where,
   orderBy,
@@ -140,6 +141,25 @@ export async function getUserRoutes(
     console.error("Error fetching user routes:", error);
     console.error("Error details:", JSON.stringify(error, null, 2));
     throw error;
+  }
+}
+
+/**
+ * -=-=-=-=-=-=-=-=-=-=-=-=- Get user's route count -=-=-=-=-=-=-=-=--=-=-=-=--=-=-
+ */
+export async function getUserRouteCount(userId: string): Promise<number> {
+  try {
+    console.log("Fetching route count for userId:", userId);
+    const pathsRef = collection(db, "Paths");
+    const q = query(pathsRef, where("creatorID", "==", userId));
+
+    const snapshot = await getCountFromServer(q);
+    const count = snapshot.data().count;
+    console.log("Route count:", count);
+    return count;
+  } catch (error) {
+    console.error("Error fetching route count:", error);
+    return 0; // Return 0 on error rather than throwing
   }
 }
 
