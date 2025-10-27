@@ -92,30 +92,15 @@ export default function DiscoverRoute() {
     return `${hours.toFixed(1)} hours`;
   };
 
-  // Helper function to generate a static map image URL
-  const getMapImageUrl = (route: PathData): string => {
-    if (!route.waypoints || route.waypoints.length === 0) {
-      return "/placeholder-map.jpg"; // You can add a placeholder image
+  // Helper function to get route image
+  const getRouteImage = (route: PathData): string => {
+    // Use saved image if available
+    if (route.imageUrl) {
+      return route.imageUrl;
     }
 
-    // Google Maps Static API URL
-    const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-    const size = "400x200";
-    const center = `${route.waypoints[0].lat},${route.waypoints[0].lng}`;
-    const markers = route.waypoints
-      .map((wp, idx) => {
-        const label =
-          idx === 0 ? "A" : idx === route.waypoints!.length - 1 ? "B" : "";
-        return `markers=label:${label}|${wp.lat},${wp.lng}`;
-      })
-      .join("&");
-
-    // If API key is not available, return a placeholder
-    if (!apiKey) {
-      return `/api/placeholder-route-image?routeId=${route.id}`;
-    }
-
-    return `https://maps.googleapis.com/maps/api/staticmap?center=${center}&zoom=10&size=${size}&${markers}&key=${apiKey}`;
+    // Fallback to a default scenic image
+    return "/scenic1.jpg";
   };
 
   if (loading) {
@@ -182,7 +167,7 @@ export default function DiscoverRoute() {
                   }}
                 >
                   <img
-                    src={getMapImageUrl(route)}
+                    src={getRouteImage(route)}
                     alt={route.title}
                     style={{
                       width: "100%",
@@ -193,12 +178,7 @@ export default function DiscoverRoute() {
                     onError={(e) => {
                       // Fallback if image fails to load
                       const target = e.target as HTMLImageElement;
-                      target.style.display = "none";
-                      target.parentElement!.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">
-                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-                        </svg>
-                      </div>`;
+                      target.src = "/scenic1.jpg";
                     }}
                   />
                 </Box>

@@ -107,6 +107,16 @@ export default function YourRoute() {
     setRouteToDelete(null);
   };
 
+  const getRouteImage = (route: PathData): string => {
+    // Use saved image if available
+    if (route.imageUrl) {
+      return route.imageUrl;
+    }
+
+    // Fallback to a default scenic image
+    return "/scenic1.jpg";
+  };
+
   const generateGoogleMapsUrl = (route: PathData): string => {
     if (!route.waypoints || route.waypoints.length < 2) {
       return "";
@@ -258,15 +268,26 @@ export default function YourRoute() {
                       overflow: "hidden",
                       borderTopLeftRadius: "8px",
                       borderTopRightRadius: "8px",
-                      background:
-                        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                      bgcolor: "#e0e0e0",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                     }}
                   >
-                    <RouteIcon
-                      sx={{ fontSize: 64, color: "white", opacity: 0.7 }}
+                    <img
+                      src={getRouteImage(route)}
+                      alt={route.title}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                      onError={(e) => {
+                        // Fallback if image fails to load
+                        const target = e.target as HTMLImageElement;
+                        target.src = "/scenic1.jpg";
+                      }}
                     />
                   </Box>
                   <CardContent

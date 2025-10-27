@@ -32,6 +32,7 @@ export interface PathData {
   createdAt: Date;
   waypointCount: number;
   waypoints?: Waypoint[];
+  imageUrl?: string;
 }
 
 /**
@@ -41,7 +42,8 @@ export async function createRoute(
   title: string,
   description: string,
   waypoints: Waypoint[],
-  userId: string
+  userId: string,
+  imageUrl?: string
 ): Promise<string> {
   try {
     // Create the main route document
@@ -52,6 +54,7 @@ export async function createRoute(
       creatorID: userId,
       createdAt: new Date(),
       waypointCount: waypoints.length,
+      imageUrl: imageUrl || "",
     });
 
     // Save waypoints as a subcollection
@@ -131,6 +134,7 @@ export async function getUserRoutes(
         createdAt: data.createdAt?.toDate() || new Date(),
         waypointCount: data.waypointCount,
         waypoints,
+        imageUrl: data.imageUrl || "",
       });
     }
 
@@ -154,7 +158,8 @@ export async function updateRoute(
   title: string,
   description: string,
   waypoints: Waypoint[],
-  userId: string
+  userId: string,
+  imageUrl?: string
 ): Promise<void> {
   try {
     console.log("Updating route:", pathId);
@@ -167,6 +172,7 @@ export async function updateRoute(
         title: title.trim(),
         description: description.trim(),
         waypointCount: waypoints.length,
+        imageUrl: imageUrl || "",
       },
       { merge: true }
     );
@@ -240,6 +246,7 @@ export async function getRouteById(pathId: string): Promise<PathData | null> {
       createdAt: data.createdAt?.toDate() || new Date(),
       waypointCount: data.waypointCount,
       waypoints,
+      imageUrl: data.imageUrl || "",
     };
   } catch (error) {
     console.error("Error fetching route:", error);
@@ -337,6 +344,7 @@ export async function getAllRoutes(
         createdAt: data.createdAt?.toDate() || new Date(),
         waypointCount: data.waypointCount,
         waypoints,
+        imageUrl: data.imageUrl || "",
       });
     }
 

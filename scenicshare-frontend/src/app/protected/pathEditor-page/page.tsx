@@ -31,6 +31,7 @@ export default function PathEditorPage() {
   const [initialData, setInitialData] = useState<{
     title: string;
     description: string;
+    imageUrl: string;
   } | null>(null);
 
   // Fix default marker icons in bundlers
@@ -86,6 +87,7 @@ export default function PathEditorPage() {
         setInitialData({
           title: route.title,
           description: route.description,
+          imageUrl: route.imageUrl || "",
         });
         setWaypoints(route.waypoints || []);
         setError(null);
@@ -182,6 +184,7 @@ export default function PathEditorPage() {
           onWaypointsChange={setWaypoints}
           initialTitle={initialData.title}
           initialDescription={initialData.description}
+          initialImageUrl={initialData.imageUrl}
         />
 
         <MapContainer
