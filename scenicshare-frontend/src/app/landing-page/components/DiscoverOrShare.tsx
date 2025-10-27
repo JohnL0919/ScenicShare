@@ -114,7 +114,7 @@ export default function DiscoverOrShare() {
         <div className="flex justify-center mt-12 mb-8">
           <div className="w-64">
             <Button
-              href="/login-page"
+              href="/protected/pathCreator-page"
               text="Share Your Route"
               variant="primary"
             />
