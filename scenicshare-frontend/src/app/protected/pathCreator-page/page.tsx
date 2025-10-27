@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import L from "leaflet";
 import Button from "./components/Button";
 import ControlPanel from "./components/ControlPanel";
-import NavBar from "./components/NavBar";
 import PathRouting from "./components/PathRouting";
 
 interface Waypoint {

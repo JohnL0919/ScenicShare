@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import SearchBar from "@/app/landing-page/components/SearchBar";
 import { useRouter } from "next/navigation";
 import Button from "@/app/landing-page/components/Button";
 import Link from "next/link";
@@ -26,7 +25,7 @@ export default function NavBar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm bg-black/30 rounded-lg shadow-lg mx-2 sm:mx-4 md:mx-8 lg:mx-20 mt-2">
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
+        <div className="relative flex justify-between h-16 items-center">
           <div className="flex-shrink-0 flex items-center">
             <h1 className="text-xl sm:text-2xl font-bold text-white">
               <Link href="/landing-page">
@@ -35,7 +34,7 @@ export default function NavBar() {
             </h1>
           </div>
 
-          <div className="hidden lg:flex lg:items-center lg:space-x-3 xl:space-x-4 ml-2 xl:ml-5">
+          <div className="hidden lg:flex lg:items-center lg:space-x-3 xl:space-x-4 absolute left-1/2 -translate-x-1/2">
             <div className="w-24">
               <Button href="/protected/home-page" text="Home" size="compact" />
             </div>
@@ -49,10 +48,6 @@ export default function NavBar() {
                 size="compact"
               />
             </div>
-          </div>
-
-          <div className="hidden lg:flex flex-grow mx-2 xl:mx-8 justify-center items-center">
-            <SearchBar />
           </div>
 
           <div className="hidden lg:flex lg:items-center lg:space-x-2 xl:space-x-4">
@@ -102,9 +97,6 @@ export default function NavBar() {
         }`}
       >
         <div className="px-4 pt-2 pb-4 space-y-3 sm:px-6 border-t border-white/10">
-          <div className="py-2">
-            <SearchBar />
-          </div>
           <div className="space-y-2">
             <Button href="/protected/home-page" text="Home" />
             <Button text="Discover" />

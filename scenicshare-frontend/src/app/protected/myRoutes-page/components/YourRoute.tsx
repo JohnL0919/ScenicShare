@@ -109,11 +109,9 @@ export default function YourRoute() {
       return "";
     }
 
-    // Get start and end waypoints
     const startWaypoint = route.waypoints[0];
     const endWaypoint = route.waypoints[route.waypoints.length - 1];
 
-    // If there are intermediate waypoints, include them
     if (route.waypoints.length > 2) {
       const intermediateWaypoints = route.waypoints
         .slice(1, -1)
@@ -123,7 +121,6 @@ export default function YourRoute() {
       return `https://www.google.com/maps/dir/?api=1&origin=${startWaypoint.lat},${startWaypoint.lng}&destination=${endWaypoint.lat},${endWaypoint.lng}&waypoints=${intermediateWaypoints}&travelmode=driving`;
     }
 
-    // Simple start to end route
     return `https://www.google.com/maps/dir/?api=1&origin=${startWaypoint.lat},${startWaypoint.lng}&destination=${endWaypoint.lat},${endWaypoint.lng}&travelmode=driving`;
   };
 
