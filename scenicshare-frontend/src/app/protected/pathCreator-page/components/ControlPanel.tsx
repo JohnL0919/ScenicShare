@@ -45,7 +45,6 @@ export default function ControlPanel({
 }: ControlPanelProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [newWaypointName, setNewWaypointName] = useState("");
   const [open, setOpen] = useState(false); // drawer visibility
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{
@@ -62,19 +61,6 @@ export default function ControlPanel({
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
-
-  const addWaypoint = () => {
-    if (!newWaypointName.trim()) return;
-    const wp: Waypoint = {
-      id: Date.now().toString(),
-      name: newWaypointName.trim(),
-      lat: -33.8688 + (Math.random() - 0.5) * 0.1,
-      lng: 151.2093 + (Math.random() - 0.5) * 0.1,
-    };
-    const updated = [...waypoints, wp];
-    onWaypointsChange?.(updated);
-    setNewWaypointName("");
-  };
 
   const removeWaypoint = (id: string) => {
     const updated = waypoints.filter((w) => w.id !== id);
