@@ -124,7 +124,7 @@ export default function DiscoverRoute() {
     return (
       <div className="mt-8 px-4 md:px-8 lg:px-16">
         <h1 className="text-center mb-2 text-3xl">Discover Routes</h1>
-        <div className="flex justify-center items-center h-64">
+        <div className="flex justify-center items-center h-64 text-white">
           <Typography level="body-lg">
             No routes available yet. Create the first one!
           </Typography>
