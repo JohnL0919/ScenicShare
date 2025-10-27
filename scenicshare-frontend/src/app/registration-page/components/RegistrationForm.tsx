@@ -17,9 +17,9 @@ export default function RegistrationForm() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await registerUser(name, email, password, setIsLoading);
-    const t = setTimeout(() => router.push("/login-page"), 4000);
+    // const t = setTimeout(() => router.push("/login-page"), 4000);
     // optional: clear on unmount
-    return () => clearTimeout(t);
+    // return () => clearTimeout(t);
   };
 
   if (isLoading) {

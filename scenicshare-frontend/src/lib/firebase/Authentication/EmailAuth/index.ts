@@ -7,7 +7,7 @@ import { auth } from "@/lib/firebase";
 import {
   showFirebaseError,
   showSuccessMessage,
-  showInfoMessage,
+  showErrorMessage,
 } from "@/lib/errorHandler";
 
 export const registerUser = async (
@@ -50,12 +50,17 @@ export const loginUserWithEmailAndPassword = async (
       password
     );
     const results = userCredential.user;
-    if (results.emailVerified === false) {
-      showInfoMessage("Please verify your email address to continue.");
-    } else {
-      showSuccessMessage("Login successful");
-      // Auth state change will trigger redirect in the component
+
+    if (!results.emailVerified) {
+      // Sign them out immediately - no access until verified
+      await auth.signOut();
+      showErrorMessage(
+        "Please verify your email before logging in. Check your inbox (and spam folder)."
+      );
+      return null;
     }
+
+    showSuccessMessage("Login successful");
     return results;
   } catch (error) {
     showFirebaseError(error);
