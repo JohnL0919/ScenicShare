@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="bg-black text-white py-12">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Logo and Description */}
           <div className="col-span-1">
             <div className="flex items-center mb-4">
@@ -120,42 +120,26 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="/"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Featured Routes
+                  Home
                 </Link>
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/protected/home-page"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Popular Destinations
+                  Browse Routes
                 </Link>
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/protected/myRoutes-page"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Seasonal Routes
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Road Trip Guides
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Photography Tips
+                  My Routes
                 </Link>
               </li>
             </ul>
@@ -167,107 +151,29 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="#"
+                  href="/protected/pathCreator-page"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Share Your Route
+                  Create a Route
                 </Link>
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/registration-page"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  User Reviews
+                  Get Started
                 </Link>
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="/login-page"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Travel Stories
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Events & Meetups
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Forum
+                  Sign In
                 </Link>
               </li>
             </ul>
-          </div>
-
-          {/* Newsletter & Contact */}
-          <div className="col-span-1">
-            <h3 className="text-lg font-medium mb-4">Stay Updated</h3>
-            <p className="text-sm text-gray-300 mb-4">
-              Get weekly updates on new routes, travel tips, and community
-              highlights.
-            </p>
-            <div className="mb-4">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white mb-2"
-              />
-              <button className="w-full bg-white text-black py-2 rounded-md font-medium hover:bg-gray-200 transition-colors">
-                Subscribe
-              </button>
-            </div>
-            <div className="mt-6">
-              <h4 className="text-lg font-medium mb-2">Contact</h4>
-              <div className="flex items-center space-x-2 mb-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-gray-400"
-                >
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                  <polyline points="22,6 12,13 2,6"></polyline>
-                </svg>
-                <a
-                  href="mailto:hello@scenicshare.com"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  hello@scenicshare.com
-                </a>
-              </div>
-              <div className="flex items-center space-x-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-gray-400"
-                >
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                </svg>
-                <span className="text-gray-400">+1 (555) 123-4567</span>
-              </div>
-            </div>
           </div>
         </div>
 
