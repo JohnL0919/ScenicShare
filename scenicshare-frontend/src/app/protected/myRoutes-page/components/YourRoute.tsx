@@ -22,6 +22,8 @@ import RouteIcon from "@mui/icons-material/Route";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavigationIcon from "@mui/icons-material/Navigation";
+import LockIcon from "@mui/icons-material/Lock";
+import PublicIcon from "@mui/icons-material/Public";
 
 export default function YourRoute() {
   const router = useRouter();
@@ -290,6 +292,40 @@ export default function YourRoute() {
                       }}
                       sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 33vw"
                     />
+                    {/* Public/Private Indicator Badge */}
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 8,
+                        left: 8,
+                        zIndex: 10,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.5,
+                        px: 1.5,
+                        py: 0.5,
+                        borderRadius: "6px",
+                        bgcolor: route.isPublic
+                          ? "rgba(34, 197, 94, 0.95)"
+                          : "rgba(34, 197, 94, 0.95)",
+                        color: "white",
+                        fontSize: "0.75rem",
+                        fontWeight: 600,
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                      }}
+                    >
+                      {route.isPublic ? (
+                        <>
+                          <PublicIcon sx={{ fontSize: "0.875rem" }} />
+                          <span>Public</span>
+                        </>
+                      ) : (
+                        <>
+                          <LockIcon sx={{ fontSize: "0.875rem" }} />
+                          <span>Private</span>
+                        </>
+                      )}
+                    </Box>
                   </Box>
                   <CardContent
                     sx={{

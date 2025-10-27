@@ -34,6 +34,7 @@ export interface PathData {
   waypoints?: Waypoint[];
   imageUrl?: string;
   location?: string;
+  isPublic?: boolean;
 }
 
 /**
@@ -45,7 +46,8 @@ export async function createRoute(
   waypoints: Waypoint[],
   userId: string,
   imageUrl?: string,
-  location?: string
+  location?: string,
+  isPublic: boolean = false
 ): Promise<string> {
   try {
     // Create the main route document
@@ -58,6 +60,7 @@ export async function createRoute(
       waypointCount: waypoints.length,
       imageUrl: imageUrl || "",
       location: location?.trim() || "",
+      isPublic: isPublic,
     });
 
     // Save waypoints as a subcollection
@@ -139,6 +142,7 @@ export async function getUserRoutes(
         waypoints,
         imageUrl: data.imageUrl || "",
         location: data.location || "",
+        isPublic: data.isPublic || false,
       });
     }
 
@@ -164,7 +168,8 @@ export async function updateRoute(
   waypoints: Waypoint[],
   userId: string,
   imageUrl?: string,
-  location?: string
+  location?: string,
+  isPublic: boolean = false
 ): Promise<void> {
   try {
     console.log("Updating route:", pathId);
@@ -179,6 +184,7 @@ export async function updateRoute(
         waypointCount: waypoints.length,
         imageUrl: imageUrl || "",
         location: location?.trim() || "",
+        isPublic: isPublic,
       },
       { merge: true }
     );
@@ -254,6 +260,7 @@ export async function getRouteById(pathId: string): Promise<PathData | null> {
       waypoints,
       imageUrl: data.imageUrl || "",
       location: data.location || "",
+      isPublic: data.isPublic || false,
     };
   } catch (error) {
     console.error("Error fetching route:", error);
@@ -318,7 +325,12 @@ export async function getAllRoutes(
 ): Promise<PathData[]> {
   try {
     const pathsRef = collection(db, "Paths");
-    const q = query(pathsRef, orderBy("createdAt", "desc"), limit(limitCount));
+    const q = query(
+      pathsRef,
+      where("isPublic", "==", true),
+      orderBy("createdAt", "desc"),
+      limit(limitCount)
+    );
 
     const querySnapshot = await getDocs(q);
     const paths: PathData[] = [];
@@ -353,6 +365,7 @@ export async function getAllRoutes(
         waypoints,
         imageUrl: data.imageUrl || "",
         location: data.location || "",
+        isPublic: data.isPublic || false,
       });
     }
 

@@ -19,6 +19,7 @@ interface ControlPanelProps {
   initialDescription?: string;
   initialImageUrl?: string;
   initialLocation?: string;
+  initialIsPublic?: boolean;
 }
 
 const STOCK_IMAGES = [
@@ -64,11 +65,13 @@ export default function ControlPanel({
   initialDescription = "",
   initialImageUrl = "",
   initialLocation = "",
+  initialIsPublic = false,
 }: ControlPanelProps) {
   const router = useRouter();
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
   const [location, setLocation] = useState(initialLocation);
+  const [isPublic, setIsPublic] = useState(initialIsPublic);
   const [selectedImage, setSelectedImage] = useState<string>(initialImageUrl);
   const [customImageUrl, setCustomImageUrl] = useState<string>("");
   const [imageSource, setImageSource] = useState<"stock" | "custom">(
@@ -85,11 +88,12 @@ export default function ControlPanel({
   } | null>(null);
   const { currentUser } = useAuth();
 
-  // Update title, description, location, and image when initial values change
+  // Update title, description, location, image, and visibility when initial values change
   useEffect(() => {
     setTitle(initialTitle);
     setDescription(initialDescription);
     setLocation(initialLocation);
+    setIsPublic(initialIsPublic);
     if (initialImageUrl) {
       if (STOCK_IMAGES.includes(initialImageUrl)) {
         setSelectedImage(initialImageUrl);
@@ -99,7 +103,13 @@ export default function ControlPanel({
         setImageSource("custom");
       }
     }
-  }, [initialTitle, initialDescription, initialImageUrl, initialLocation]);
+  }, [
+    initialTitle,
+    initialDescription,
+    initialImageUrl,
+    initialLocation,
+    initialIsPublic,
+  ]);
 
   // Open by default on desktop (>=1024px), closed on mobile/tablet
   useEffect(() => {
@@ -166,7 +176,8 @@ export default function ControlPanel({
         waypoints,
         currentUser.uid,
         imageToSave,
-        location
+        location,
+        isPublic
       );
 
       console.log("✅ Route updated successfully");
@@ -274,6 +285,92 @@ export default function ControlPanel({
                 placeholder="Describe your route..."
               />
             </label>
+          </Section>
+
+          <Section title="Visibility" defaultOpen>
+            <div className="space-y-2">
+              <p className="text-sm text-gray-700 mb-3">
+                Choose who can see this route
+              </p>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsPublic(false)}
+                  className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all text-left ${
+                    !isPublic
+                      ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
+                      : "border-gray-300 bg-white hover:border-gray-400"
+                  }`}
+                >
+                  <div className="flex items-start gap-2">
+                    <svg
+                      className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
+                        !isPublic ? "text-blue-600" : "text-gray-400"
+                      }`}
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <div>
+                      <p
+                        className={`font-semibold text-sm ${
+                          !isPublic ? "text-blue-700" : "text-gray-700"
+                        }`}
+                      >
+                        Private
+                      </p>
+                      <p className="text-xs text-gray-600 mt-0.5">
+                        Only you can see this route
+                      </p>
+                    </div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsPublic(true)}
+                  className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all text-left ${
+                    isPublic
+                      ? "border-green-500 bg-green-50 ring-2 ring-green-200"
+                      : "border-gray-300 bg-white hover:border-gray-400"
+                  }`}
+                >
+                  <div className="flex items-start gap-2">
+                    <svg
+                      className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
+                        isPublic ? "text-green-600" : "text-gray-400"
+                      }`}
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path
+                        fillRule="evenodd"
+                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <div>
+                      <p
+                        className={`font-semibold text-sm ${
+                          isPublic ? "text-green-700" : "text-gray-700"
+                        }`}
+                      >
+                        Public
+                      </p>
+                      <p className="text-xs text-gray-600 mt-0.5">
+                        Everyone can discover this route
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
           </Section>
 
           <Section title="Cover Image">
