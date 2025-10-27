@@ -18,6 +18,7 @@ import { useAuth } from "@/contexts/authContexts";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import RouteIcon from "@mui/icons-material/Route";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 import NavigationIcon from "@mui/icons-material/Navigation";
 
 export default function YourRoute() {
@@ -196,12 +197,37 @@ export default function YourRoute() {
                       boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
                       transform: "scale(1.02)",
                       transition: "all 0.3s ease",
-                      "& .delete-button": {
+                      "& .delete-button, & .edit-button": {
                         opacity: 1,
                       },
                     },
                   }}
                 >
+                  {/* Edit Button */}
+                  <IconButton
+                    className="edit-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // TODO: Add edit functionality
+                      console.log("Edit route:", route.id);
+                    }}
+                    sx={{
+                      position: "absolute",
+                      top: 8,
+                      right: 48,
+                      zIndex: 10,
+                      bgcolor: "rgba(255, 255, 255, 0.9)",
+                      opacity: 0,
+                      transition: "opacity 0.3s ease",
+                      "&:hover": {
+                        bgcolor: "white",
+                        color: "green",
+                      },
+                    }}
+                    size="sm"
+                  >
+                    <EditIcon />
+                  </IconButton>
                   {/* Delete Button */}
                   <IconButton
                     className="delete-button"
@@ -215,7 +241,7 @@ export default function YourRoute() {
                       opacity: 0,
                       transition: "opacity 0.3s ease",
                       "&:hover": {
-                        bgcolor: "rgba(255, 0, 0, 0.1)",
+                        bgcolor: "white",
                         color: "red",
                       },
                     }}
@@ -312,6 +338,10 @@ export default function YourRoute() {
                       sx={{
                         mt: "auto",
                         width: "100%",
+                        bgcolor: "green",
+                        "&:hover": {
+                          bgcolor: "darkgreen",
+                        },
                       }}
                     >
                       Start Navigation

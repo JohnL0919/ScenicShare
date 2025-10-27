@@ -122,11 +122,6 @@ export default function ControlPanel({
         text: "Route saved successfully!",
       });
       setTimeout(() => setSaveMessage(null), 3000);
-
-      // Optional: Reset form after successful save
-      // setTitle("");
-      // setDescription("");
-      // onWaypointsChange?.([]);
     } catch (error) {
       console.error("❌ Error saving route:", error);
       setSaveMessage({
