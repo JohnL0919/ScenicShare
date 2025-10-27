@@ -190,20 +190,24 @@ export default function ControlPanel({
           bg-white/95 backdrop-blur border-l border-black/10 shadow-xl
           transition-transform duration-300 ease-out
           ${open ? "translate-x-0" : "translate-x-full"}
-          pt-4
           flex flex-col
         `}
         role="complementary"
         aria-label="Route editor panel"
       >
-        <div className="p-4 space-y-3 overflow-y-auto h-full">
+        {/* Sticky Header */}
+        <div className="p-4 pb-3 bg-white rounded-t-2xl border-b border-gray-200 flex-shrink-0">
           <h1 className="text-xl font-bold text-gray-800 mb-1">
             Edit Your Route
           </h1>
-          <h6 className="text-sm  text-gray-400 mb-7">
+          <h6 className="text-sm text-gray-400">
             Please drag the waypoints to adjust your route or modify the details
             below.
           </h6>
+        </div>
+
+        {/* Scrollable Content Area */}
+        <div className="p-4 pt-3 pb-2 space-y-3 overflow-y-auto flex-1 bg-white">
           <Section title="Details">
             <label className="block mb-2">
               <span className="block text-sm text-gray-700 mb-1">
@@ -395,10 +399,13 @@ export default function ControlPanel({
               <p className="text-sm text-gray-500">No waypoints yet.</p>
             )}
           </Section>
+        </div>
 
+        {/* Sticky Footer with Save Message and Button */}
+        <div className="border-t border-gray-200 bg-white p-4 rounded-b-2xl flex-shrink-0">
           {saveMessage && (
             <div
-              className={`p-3 rounded-lg text-sm font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300 ${
+              className={`mb-3 p-3 rounded-lg text-sm font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300 ${
                 saveMessage.type === "success"
                   ? "bg-green-50 text-green-800 border border-green-200"
                   : "bg-red-50 text-red-800 border border-red-200"
