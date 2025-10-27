@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Box from "@mui/joy/Box";
 import Grid from "@mui/joy/Grid";
 import Card from "@mui/joy/Card";
@@ -22,6 +23,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import NavigationIcon from "@mui/icons-material/Navigation";
 
 export default function YourRoute() {
+  const router = useRouter();
   const { currentUser } = useAuth();
   const [routes, setRoutes] = useState<PathData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -208,8 +210,7 @@ export default function YourRoute() {
                     className="edit-button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      // TODO: Add edit functionality
-                      console.log("Edit route:", route.id);
+                      router.push(`/protected/pathEditor-page?id=${route.id}`);
                     }}
                     sx={{
                       position: "absolute",

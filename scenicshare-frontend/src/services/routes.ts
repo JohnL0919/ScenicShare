@@ -4,6 +4,7 @@ import {
   addDoc,
   doc,
   setDoc,
+  getDoc,
   getDocs,
   deleteDoc,
   getCountFromServer,
@@ -141,6 +142,107 @@ export async function getUserRoutes(
   } catch (error) {
     console.error("Error fetching user routes:", error);
     console.error("Error details:", JSON.stringify(error, null, 2));
+    throw error;
+  }
+}
+
+/**
+ * -=-=-=-=-=-=-=-=-=-=-=-=- Update an existing route with waypoints -=-=-=-=-=-=-=-=--=-=-=-=--=-=-
+ */
+export async function updateRoute(
+  pathId: string,
+  title: string,
+  description: string,
+  waypoints: Waypoint[],
+  userId: string
+): Promise<void> {
+  try {
+    console.log("Updating route:", pathId);
+
+    // Update the main route document
+    const pathRef = doc(db, "Paths", pathId);
+    await setDoc(
+      pathRef,
+      {
+        title: title.trim(),
+        description: description.trim(),
+        waypointCount: waypoints.length,
+      },
+      { merge: true }
+    );
+
+    // Delete all existing waypoints
+    const waypointsRef = collection(pathRef, "waypoints");
+    const existingWaypoints = await getDocs(waypointsRef);
+    const deletePromises = existingWaypoints.docs.map((wpDoc) =>
+      deleteDoc(doc(db, "Paths", pathId, "waypoints", wpDoc.id))
+    );
+    await Promise.all(deletePromises);
+
+    // Add updated waypoints
+    const waypointPromises = waypoints.map(async (waypoint, index) => {
+      const waypointData = {
+        name: waypoint.name,
+        lat: waypoint.lat,
+        lng: waypoint.lng,
+        order: index,
+        creatorID: userId,
+        city: waypoint.city || "",
+        state: waypoint.state || "",
+      };
+
+      return setDoc(doc(waypointsRef, waypoint.id), waypointData);
+    });
+
+    await Promise.all(waypointPromises);
+    console.log("Route updated successfully");
+  } catch (error) {
+    console.error("Error updating route:", error);
+    throw error;
+  }
+}
+
+/**
+ * -=-=-=-=-=-=-=-=-=-=-=-=- Get a single route by ID -=-=-=-=-=-=-=-=--=-=-=-=--=-=-
+ */
+export async function getRouteById(pathId: string): Promise<PathData | null> {
+  try {
+    console.log("Fetching route:", pathId);
+    const pathRef = doc(db, "Paths", pathId);
+    const pathSnapshot = await getDoc(pathRef);
+
+    if (!pathSnapshot.exists()) {
+      console.log("Route not found");
+      return null;
+    }
+
+    const data = pathSnapshot.data();
+
+    // Fetch waypoints
+    const waypointsRef = collection(pathRef, "waypoints");
+    const waypointsSnapshot = await getDocs(waypointsRef);
+    const waypoints: Waypoint[] = waypointsSnapshot.docs.map(
+      (wpDoc) =>
+        ({
+          id: wpDoc.id,
+          ...wpDoc.data(),
+        } as Waypoint)
+    );
+
+    // Sort waypoints by order
+    waypoints.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+    return {
+      id: pathSnapshot.id,
+      title: data.title,
+      description: data.description,
+      creatorID: data.creatorID,
+      createdAt: data.createdAt?.toDate() || new Date(),
+      waypointCount: data.waypointCount,
+      waypoints,
+    };
+  } catch (error) {
+    console.error("Error fetching route:", error);
     throw error;
   }
 }
