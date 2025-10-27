@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useAuth } from "@/contexts/authContexts";
 import { updateRoute } from "@/services/routes";
 
@@ -21,17 +22,6 @@ interface ControlPanelProps {
   initialLocation?: string;
   initialIsPublic?: boolean;
 }
-
-const STOCK_IMAGES = [
-  "/scenic1.jpg",
-  "/scenic2.jpg",
-  "/scenic3.jpg",
-  "/scenic4.jpg",
-  "/scenic5.jpg",
-  "/scenic6.jpg",
-  "/scenic7.jpg",
-  "/scenic8.jpg",
-];
 
 const Section: React.FC<{
   title: string;
@@ -72,14 +62,7 @@ export default function ControlPanel({
   const [description, setDescription] = useState(initialDescription);
   const [location, setLocation] = useState(initialLocation);
   const [isPublic, setIsPublic] = useState(initialIsPublic);
-  const [selectedImage, setSelectedImage] = useState<string>(initialImageUrl);
   const [customImageUrl, setCustomImageUrl] = useState<string>("");
-  const [imageSource, setImageSource] = useState<"stock" | "custom">(
-    initialImageUrl && !STOCK_IMAGES.includes(initialImageUrl)
-      ? "custom"
-      : "stock"
-  );
-  const [newWaypointName, setNewWaypointName] = useState("");
   const [open, setOpen] = useState(false); // drawer visibility
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{
@@ -94,15 +77,7 @@ export default function ControlPanel({
     setDescription(initialDescription);
     setLocation(initialLocation);
     setIsPublic(initialIsPublic);
-    if (initialImageUrl) {
-      if (STOCK_IMAGES.includes(initialImageUrl)) {
-        setSelectedImage(initialImageUrl);
-        setImageSource("stock");
-      } else {
-        setCustomImageUrl(initialImageUrl);
-        setImageSource("custom");
-      }
-    }
+    setCustomImageUrl(initialImageUrl);
   }, [
     initialTitle,
     initialDescription,
@@ -119,19 +94,6 @@ export default function ControlPanel({
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
-
-  const addWaypoint = () => {
-    if (!newWaypointName.trim()) return;
-    const wp: Waypoint = {
-      id: Date.now().toString(),
-      name: newWaypointName.trim(),
-      lat: waypoints[0]?.lat || -33.8688 + (Math.random() - 0.5) * 0.1,
-      lng: waypoints[0]?.lng || 151.2093 + (Math.random() - 0.5) * 0.1,
-    };
-    const updated = [...waypoints, wp];
-    onWaypointsChange?.(updated);
-    setNewWaypointName("");
-  };
 
   const removeWaypoint = (id: string) => {
     const updated = waypoints.filter((w) => w.id !== id);
@@ -165,17 +127,13 @@ export default function ControlPanel({
     setSaveMessage(null);
 
     try {
-      // Determine which image to save
-      const imageToSave =
-        imageSource === "custom" ? customImageUrl : selectedImage;
-
       await updateRoute(
         routeId,
         title,
         description,
         waypoints,
         currentUser.uid,
-        imageToSave,
+        customImageUrl,
         location,
         isPublic
       );
@@ -373,97 +331,29 @@ export default function ControlPanel({
             </div>
           </Section>
 
-          <Section title="Cover Image">
-            <div className="space-y-3">
-              {/* Image source selector */}
-              <div className="flex gap-2 mb-3">
-                <button
-                  type="button"
-                  onClick={() => setImageSource("stock")}
-                  className={`flex-1 px-3 py-2 text-sm rounded-lg border transition-colors ${
-                    imageSource === "stock"
-                      ? "bg-blue-50 border-blue-500 text-blue-700 font-medium"
-                      : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  Stock Images
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setImageSource("custom")}
-                  className={`flex-1 px-3 py-2 text-sm rounded-lg border transition-colors ${
-                    imageSource === "custom"
-                      ? "bg-blue-50 border-blue-500 text-blue-700 font-medium"
-                      : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }`}
-                >
-                  Custom URL
-                </button>
-              </div>
-
-              {imageSource === "stock" ? (
-                <div className="grid grid-cols-2 gap-2">
-                  {STOCK_IMAGES.map((imgUrl) => (
-                    <button
-                      key={imgUrl}
-                      type="button"
-                      onClick={() => setSelectedImage(imgUrl)}
-                      className={`relative aspect-video rounded-lg overflow-hidden border-2 transition-all hover:scale-105 ${
-                        selectedImage === imgUrl
-                          ? "border-blue-500 ring-2 ring-blue-300"
-                          : "border-gray-200 hover:border-gray-400"
-                      }`}
-                    >
-                      <img
-                        src={imgUrl}
-                        alt="Stock scenic"
-                        className="w-full h-full object-cover"
-                      />
-                      {selectedImage === imgUrl && (
-                        <div className="absolute inset-0 bg-blue-500/20 flex items-center justify-center">
-                          <svg
-                            className="w-8 h-8 text-white drop-shadow-lg"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                              clipRule="evenodd"
-                            />
-                          </svg>
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <label className="block">
-                    <span className="block text-sm text-gray-700 mb-1">
-                      Image URL
-                    </span>
-                    <input
-                      type="url"
-                      className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
-                      value={customImageUrl}
-                      onChange={(e) => setCustomImageUrl(e.target.value)}
-                      placeholder="https://example.com/image.jpg"
-                    />
-                  </label>
-                  {customImageUrl && (
-                    <div className="mt-2 rounded-lg overflow-hidden border border-gray-200">
-                      <img
-                        src={customImageUrl}
-                        alt="Preview"
-                        className="w-full aspect-video object-cover"
-                        onError={(e) => {
-                          const target = e.target as HTMLImageElement;
-                          target.style.display = "none";
-                        }}
-                      />
-                    </div>
-                  )}
+          <Section title="Cover Image" defaultOpen>
+            <div className="space-y-2">
+              <label className="block">
+                <span className="block text-sm text-gray-700 mb-1">
+                  Image URL
+                </span>
+                <input
+                  type="url"
+                  className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  value={customImageUrl}
+                  onChange={(e) => setCustomImageUrl(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                />
+              </label>
+              {customImageUrl && (
+                <div className="mt-2 rounded-lg overflow-hidden border border-gray-200 relative aspect-video">
+                  <Image
+                    src={customImageUrl}
+                    alt="Preview"
+                    fill
+                    className="object-cover"
+                    sizes="360px"
+                  />
                 </div>
               )}
             </div>
