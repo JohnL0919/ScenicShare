@@ -184,12 +184,17 @@ export default function YourRoute() {
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2} sx={{ flexGrow: 1 }}>
           {routes.map((route) => {
-            const firstWaypoint = route.waypoints?.[0];
-            const location = firstWaypoint
-              ? `${firstWaypoint.city || ""}${
-                  firstWaypoint.city && firstWaypoint.state ? ", " : ""
-                }${firstWaypoint.state || ""}`
-              : "Location not set";
+            // Use saved location or fall back to waypoint-based location
+            const location =
+              route.location ||
+              (() => {
+                const firstWaypoint = route.waypoints?.[0];
+                return firstWaypoint
+                  ? `${firstWaypoint.city || ""}${
+                      firstWaypoint.city && firstWaypoint.state ? ", " : ""
+                    }${firstWaypoint.state || ""}`
+                  : "Location not set";
+              })();
 
             return (
               <Grid xs={12} sm={6} md={4} key={route.id}>

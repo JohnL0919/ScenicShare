@@ -29,8 +29,14 @@ export default function DiscoverRoute() {
     fetchRoutes();
   }, []);
 
-  // Helper function to get location string from waypoints
+  // Helper function to get location string
   const getLocation = (route: PathData): string => {
+    // Use the saved location if available
+    if (route.location) {
+      return route.location;
+    }
+
+    // Fall back to waypoint-based location
     if (!route.waypoints || route.waypoints.length === 0) {
       return "Unknown location";
     }

@@ -32,6 +32,7 @@ export default function PathEditorPage() {
     title: string;
     description: string;
     imageUrl: string;
+    location: string;
   } | null>(null);
 
   // Fix default marker icons in bundlers
@@ -88,6 +89,7 @@ export default function PathEditorPage() {
           title: route.title,
           description: route.description,
           imageUrl: route.imageUrl || "",
+          location: route.location || "",
         });
         setWaypoints(route.waypoints || []);
         setError(null);
@@ -185,6 +187,7 @@ export default function PathEditorPage() {
           initialTitle={initialData.title}
           initialDescription={initialData.description}
           initialImageUrl={initialData.imageUrl}
+          initialLocation={initialData.location}
         />
 
         <MapContainer

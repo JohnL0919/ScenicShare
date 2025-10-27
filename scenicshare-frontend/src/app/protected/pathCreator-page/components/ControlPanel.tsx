@@ -56,6 +56,7 @@ export default function ControlPanel({
 }: ControlPanelProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [location, setLocation] = useState("");
   const [selectedImage, setSelectedImage] = useState<string>("");
   const [customImageUrl, setCustomImageUrl] = useState<string>("");
   const [imageSource, setImageSource] = useState<"stock" | "custom">("stock");
@@ -117,7 +118,8 @@ export default function ControlPanel({
         description,
         waypoints,
         currentUser.uid,
-        imageToSave
+        imageToSave,
+        location
       );
 
       console.log("✅ Route saved successfully with ID:", routeId);
@@ -193,6 +195,19 @@ export default function ControlPanel({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter route title..."
+              />
+            </label>
+
+            <label className="block mb-2">
+              <span className="block text-sm text-gray-700 mb-1">
+                Location / Suburb
+              </span>
+              <input
+                type="text"
+                className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g., Sydney, NSW"
               />
             </label>
 

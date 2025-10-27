@@ -18,6 +18,7 @@ interface ControlPanelProps {
   initialTitle?: string;
   initialDescription?: string;
   initialImageUrl?: string;
+  initialLocation?: string;
 }
 
 const STOCK_IMAGES = [
@@ -62,10 +63,12 @@ export default function ControlPanel({
   initialTitle = "",
   initialDescription = "",
   initialImageUrl = "",
+  initialLocation = "",
 }: ControlPanelProps) {
   const router = useRouter();
   const [title, setTitle] = useState(initialTitle);
   const [description, setDescription] = useState(initialDescription);
+  const [location, setLocation] = useState(initialLocation);
   const [selectedImage, setSelectedImage] = useState<string>(initialImageUrl);
   const [customImageUrl, setCustomImageUrl] = useState<string>("");
   const [imageSource, setImageSource] = useState<"stock" | "custom">(
@@ -82,10 +85,11 @@ export default function ControlPanel({
   } | null>(null);
   const { currentUser } = useAuth();
 
-  // Update title, description, and image when initial values change
+  // Update title, description, location, and image when initial values change
   useEffect(() => {
     setTitle(initialTitle);
     setDescription(initialDescription);
+    setLocation(initialLocation);
     if (initialImageUrl) {
       if (STOCK_IMAGES.includes(initialImageUrl)) {
         setSelectedImage(initialImageUrl);
@@ -95,7 +99,7 @@ export default function ControlPanel({
         setImageSource("custom");
       }
     }
-  }, [initialTitle, initialDescription, initialImageUrl]);
+  }, [initialTitle, initialDescription, initialImageUrl, initialLocation]);
 
   // Open by default on desktop (>=1024px), closed on mobile/tablet
   useEffect(() => {
@@ -161,7 +165,8 @@ export default function ControlPanel({
         description,
         waypoints,
         currentUser.uid,
-        imageToSave
+        imageToSave,
+        location
       );
 
       console.log("✅ Route updated successfully");
@@ -241,6 +246,19 @@ export default function ControlPanel({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter route title..."
+              />
+            </label>
+
+            <label className="block mb-2">
+              <span className="block text-sm text-gray-700 mb-1">
+                Location / Suburb
+              </span>
+              <input
+                type="text"
+                className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g., Sydney, NSW"
               />
             </label>
 
