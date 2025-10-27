@@ -170,7 +170,7 @@ export default function YourRoute() {
   }
 
   return (
-    <div className="w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto mt-8 px-4 sm:px-6 lg:px-8">
+    <div className="w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto mt-8 mb-16 px-4 sm:px-6 lg:px-8">
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2} sx={{ flexGrow: 1 }}>
           {routes.map((route) => {
