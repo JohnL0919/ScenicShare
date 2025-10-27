@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import Box from "@mui/joy/Box";
 import Grid from "@mui/joy/Grid";
 import Card from "@mui/joy/Card";
@@ -172,20 +173,15 @@ export default function DiscoverRoute() {
                     justifyContent: "center",
                   }}
                 >
-                  <img
+                  <Image
                     src={getRouteImage(route)}
                     alt={route.title}
+                    fill
                     style={{
-                      width: "100%",
-                      height: "100%",
                       objectFit: "cover",
                       objectPosition: "center",
                     }}
-                    onError={(e) => {
-                      // Fallback if image fails to load
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/scenic1.jpg";
-                    }}
+                    sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 33vw"
                   />
                 </Box>
                 <CardContent sx={{ p: 2 }}>

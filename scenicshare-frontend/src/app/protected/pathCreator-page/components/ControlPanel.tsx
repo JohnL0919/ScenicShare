@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useAuth } from "@/contexts/authContexts";
 import { createRoute } from "@/services/routes";
 
@@ -223,15 +224,13 @@ export default function ControlPanel({
                 />
               </label>
               {customImageUrl && (
-                <div className="mt-2 rounded-lg overflow-hidden border border-gray-200">
-                  <img
+                <div className="mt-2 rounded-lg overflow-hidden border border-gray-200 relative aspect-video">
+                  <Image
                     src={customImageUrl}
                     alt="Preview"
-                    className="w-full aspect-video object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = "none";
-                    }}
+                    fill
+                    className="object-cover"
+                    sizes="360px"
                   />
                 </div>
               )}
