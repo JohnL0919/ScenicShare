@@ -3,8 +3,9 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { getAllRoutes, PathData } from "@/services/routes";
+import { getAllRoutes, PathData, getRouteById } from "@/services/routes";
 import { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
+import RouteModal from "@/components/RouteModal";
 
 export default function DiscoverRoute() {
   const [routes, setRoutes] = React.useState<PathData[]>([]);
@@ -12,6 +13,10 @@ export default function DiscoverRoute() {
   const [lastDoc, setLastDoc] =
     React.useState<QueryDocumentSnapshot<DocumentData> | null>(null);
   const [hasMore, setHasMore] = React.useState(true);
+  const [selectedRoute, setSelectedRoute] = React.useState<PathData | null>(
+    null
+  );
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   React.useEffect(() => {
     const fetchRoutes = async () => {
@@ -58,6 +63,21 @@ export default function DiscoverRoute() {
 
   const getRouteImage = (route: PathData): string => {
     return route.imageUrl || "/scenic1.jpg";
+  };
+
+  const handleRouteClick = async (routeId: string) => {
+    try {
+      const fullRoute = await getRouteById(routeId);
+      setSelectedRoute(fullRoute);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Error loading route details:", error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedRoute(null), 300);
   };
 
   if (loading) {
@@ -176,7 +196,10 @@ export default function DiscoverRoute() {
                 </p>
 
                 {/* View Button */}
-                <button className="w-full bg-green-900 hover:bg-green-800 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium">
+                <button
+                  onClick={() => handleRouteClick(route.id)}
+                  className="w-full bg-green-900 hover:bg-green-800 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium"
+                >
                   View Route
                 </button>
               </div>
@@ -184,6 +207,13 @@ export default function DiscoverRoute() {
           ))}
         </div>
       </div>
+
+      {/* Route Detail Modal */}
+      <RouteModal
+        route={selectedRoute}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }
