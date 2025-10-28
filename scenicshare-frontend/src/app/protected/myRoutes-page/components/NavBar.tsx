@@ -39,7 +39,7 @@ export default function NavBar() {
               <Button href="/protected/home-page" text="Home" size="compact" />
             </div>
             <div className="w-24">
-              <Button text="Discover" size="compact" />
+              <Button href="/discover-page" text="Discover" size="compact" />
             </div>
             <div className="w-24">
               <Button
@@ -99,7 +99,7 @@ export default function NavBar() {
         <div className="px-4 pt-2 pb-4 space-y-3 sm:px-6 border-t border-white/10">
           <div className="space-y-2">
             <Button href="/protected/home-page" text="Home" />
-            <Button text="Discover" />
+            <Button href="/discover-page" text="Discover" />
             <Button href="/protected/myRoutes-page" text="My Routes" />
           </div>
           <button
