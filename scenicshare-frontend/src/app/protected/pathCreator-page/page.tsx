@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import L from "leaflet";
 import Button from "./components/Button";
 import ControlPanel from "./components/ControlPanel";
-import NavBar from "./components/NavBar";
 import PathRouting from "./components/PathRouting";
 
 interface Waypoint {
@@ -66,15 +65,11 @@ export default function PathCreatorPage() {
       `}</style>
 
       <div className="h-screen w-full m-0 p-0 relative">
-        {/* Top NavBar */}
-        <div className="absolute top-0 left-0 right-0 z-[1000]">
-          <NavBar />
-        </div>
-
         {/* Back Button */}
-        <div className="absolute top-20 left-4 z-[999]">
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[999] opacity-90">
           <Button
             variant="primary"
+            size="normal"
             href="/protected/home-page"
             text={
               <div className="flex items-center justify-center gap-2">
@@ -82,17 +77,17 @@ export default function PathCreatorPage() {
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  strokeWidth={1.5}
+                  strokeWidth={2.5}
                   stroke="currentColor"
                   className="w-5 h-5"
                 >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+                    d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
                   />
                 </svg>
-                <span className="hidden sm:inline">Back</span>
+                <span className="font-semibold">Back</span>
               </div>
             }
           />

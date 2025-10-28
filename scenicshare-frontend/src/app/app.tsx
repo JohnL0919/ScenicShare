@@ -7,6 +7,7 @@ import HomePage from "./protected/home-page/page";
 import CreatePath from "./protected/pathCreator-page/page";
 import Login from "./login-page/page";
 import Register from "./registration-page/page";
+import MyRoutes from "./protected/myRoutes-page/page";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 // Import placeholders for pages not yet created
@@ -40,6 +41,7 @@ function App() {
             <ProtectedRoute>
               <HomePage />
               <CreatePath />
+              <MyRoutes />
             </ProtectedRoute>
 
             <Route path="*" element={<NotFound />} />

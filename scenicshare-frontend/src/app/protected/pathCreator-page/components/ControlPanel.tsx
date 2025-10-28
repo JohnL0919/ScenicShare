@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useAuth } from "@/contexts/authContexts";
 import { createRoute } from "@/services/routes";
 
@@ -45,7 +46,9 @@ export default function ControlPanel({
 }: ControlPanelProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [newWaypointName, setNewWaypointName] = useState("");
+  const [location, setLocation] = useState("");
+  const [customImageUrl, setCustomImageUrl] = useState<string>("");
+  const [isPublic, setIsPublic] = useState(false); // public/private toggle
   const [open, setOpen] = useState(false); // drawer visibility
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<{
@@ -62,19 +65,6 @@ export default function ControlPanel({
     mq.addEventListener("change", handler);
     return () => mq.removeEventListener("change", handler);
   }, []);
-
-  const addWaypoint = () => {
-    if (!newWaypointName.trim()) return;
-    const wp: Waypoint = {
-      id: Date.now().toString(),
-      name: newWaypointName.trim(),
-      lat: -33.8688 + (Math.random() - 0.5) * 0.1,
-      lng: 151.2093 + (Math.random() - 0.5) * 0.1,
-    };
-    const updated = [...waypoints, wp];
-    onWaypointsChange?.(updated);
-    setNewWaypointName("");
-  };
 
   const removeWaypoint = (id: string) => {
     const updated = waypoints.filter((w) => w.id !== id);
@@ -112,7 +102,10 @@ export default function ControlPanel({
         title,
         description,
         waypoints,
-        currentUser.uid
+        currentUser.uid,
+        customImageUrl,
+        location,
+        isPublic
       );
 
       console.log("✅ Route saved successfully with ID:", routeId);
@@ -122,11 +115,6 @@ export default function ControlPanel({
         text: "Route saved successfully!",
       });
       setTimeout(() => setSaveMessage(null), 3000);
-
-      // Optional: Reset form after successful save
-      // setTitle("");
-      // setDescription("");
-      // onWaypointsChange?.([]);
     } catch (error) {
       console.error("❌ Error saving route:", error);
       setSaveMessage({
@@ -168,20 +156,24 @@ export default function ControlPanel({
           bg-white/95 backdrop-blur border-l border-black/10 shadow-xl
           transition-transform duration-300 ease-out
           ${open ? "translate-x-0" : "translate-x-full"}
-          pt-4
           flex flex-col
         `}
         role="complementary"
         aria-label="Route creator panel"
       >
-        <div className="p-4 space-y-3 overflow-y-auto h-full">
+        {/* Sticky Header */}
+        <div className="p-4 pb-3 bg-white rounded-t-2xl border-b border-gray-200 flex-shrink-0">
           <h1 className="text-xl font-bold text-gray-800 mb-1">
             Create Your Route
           </h1>
-          <h6 className="text-sm  text-gray-400 mb-7">
+          <h6 className="text-sm text-gray-400">
             Please drag the waypoints to choose your starting point and
             destination.
           </h6>
+        </div>
+
+        {/* Scrollable Content Area */}
+        <div className="p-4 pt-3 pb-2 space-y-3 overflow-y-auto flex-1 bg-white">
           <Section title="Details">
             <label className="block mb-2">
               <span className="block text-sm text-gray-700 mb-1">
@@ -193,6 +185,19 @@ export default function ControlPanel({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="Enter route title..."
+              />
+            </label>
+
+            <label className="block mb-2">
+              <span className="block text-sm text-gray-700 mb-1">
+                Location / Suburb
+              </span>
+              <input
+                type="text"
+                className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="e.g., Sydney, NSW"
               />
             </label>
 
@@ -208,6 +213,150 @@ export default function ControlPanel({
                 placeholder="Describe your route..."
               />
             </label>
+          </Section>
+
+          <Section title="Visibility" defaultOpen>
+            <div className="space-y-2">
+              <p className="text-sm text-gray-700 mb-3">
+                Choose who can see this route
+              </p>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsPublic(false)}
+                  className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all text-left ${
+                    !isPublic
+                      ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
+                      : "border-gray-300 bg-white hover:border-gray-400"
+                  }`}
+                >
+                  <div className="flex items-start gap-2">
+                    <svg
+                      className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
+                        !isPublic ? "text-blue-600" : "text-gray-400"
+                      }`}
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <div>
+                      <p
+                        className={`font-semibold text-sm ${
+                          !isPublic ? "text-blue-700" : "text-gray-700"
+                        }`}
+                      >
+                        Private
+                      </p>
+                      <p className="text-xs text-gray-600 mt-0.5">
+                        Only you can see this route
+                      </p>
+                    </div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsPublic(true)}
+                  className={`flex-1 px-4 py-3 rounded-lg border-2 transition-all text-left ${
+                    isPublic
+                      ? "border-green-500 bg-green-50 ring-2 ring-green-200"
+                      : "border-gray-300 bg-white hover:border-gray-400"
+                  }`}
+                >
+                  <div className="flex items-start gap-2">
+                    <svg
+                      className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
+                        isPublic ? "text-green-600" : "text-gray-400"
+                      }`}
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path
+                        fillRule="evenodd"
+                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <div>
+                      <p
+                        className={`font-semibold text-sm ${
+                          isPublic ? "text-green-700" : "text-gray-700"
+                        }`}
+                      >
+                        Public
+                      </p>
+                      <p className="text-xs text-gray-600 mt-0.5">
+                        Everyone can discover this route
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              </div>
+
+              {/* Privacy Warning for Public Routes */}
+              {isPublic && (
+                <div className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
+                  <div className="flex items-start gap-2">
+                    <svg
+                      className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-amber-800 mb-1">
+                        Privacy Reminder
+                      </p>
+                      <p className="text-xs text-amber-700 leading-relaxed">
+                        Please avoid using your home address as a starting or
+                        ending point. Consider using a nearby public location
+                        (park, landmark, or parking lot) to protect your
+                        privacy.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </Section>
+
+          <Section title="Cover Image" defaultOpen>
+            <div className="space-y-2">
+              <label className="block">
+                <span className="block text-sm text-gray-700 mb-1">
+                  Image URL
+                </span>
+                <input
+                  type="url"
+                  className="w-full p-2 text-gray-600 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  value={customImageUrl}
+                  onChange={(e) => setCustomImageUrl(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
+                />
+              </label>
+              {customImageUrl && (
+                <div className="mt-2 rounded-lg overflow-hidden border border-gray-200 relative aspect-video">
+                  <Image
+                    src={customImageUrl}
+                    alt="Preview"
+                    fill
+                    className="object-cover"
+                    sizes="360px"
+                  />
+                </div>
+              )}
+            </div>
           </Section>
 
           <Section title="Waypoints" defaultOpen>
@@ -246,10 +395,13 @@ export default function ControlPanel({
               <p className="text-sm text-gray-500">No waypoints yet.</p>
             )}
           </Section>
+        </div>
 
+        {/* Sticky Footer with Save Message and Button */}
+        <div className="border-t border-gray-200 bg-white p-4 rounded-b-2xl flex-shrink-0">
           {saveMessage && (
             <div
-              className={`p-3 rounded-lg text-sm font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300 ${
+              className={`mb-3 p-3 rounded-lg text-sm font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300 ${
                 saveMessage.type === "success"
                   ? "bg-green-50 text-green-800 border border-green-200"
                   : "bg-red-50 text-red-800 border border-red-200"

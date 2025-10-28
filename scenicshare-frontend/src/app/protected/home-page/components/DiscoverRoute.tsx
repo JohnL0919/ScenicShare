@@ -1,111 +1,193 @@
+"use client";
+
 import * as React from "react";
-import Box from "@mui/joy/Box";
-import Grid from "@mui/joy/Grid";
-import Card from "@mui/joy/Card";
-import CardContent from "@mui/joy/CardContent";
-import Typography from "@mui/joy/Typography";
-import { scenicRouteMockData } from "@/lib/mockData";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Image from "next/image";
+import { getAllRoutes, PathData, getRouteById } from "@/services/routes";
+import { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
+import RouteModal from "@/components/RouteModal";
 
 export default function DiscoverRoute() {
-  // Limit to only show 6 routes
-  const routesToShow = scenicRouteMockData.slice(0, 6);
+  const [routes, setRoutes] = React.useState<PathData[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [lastDoc, setLastDoc] =
+    React.useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [hasMore, setHasMore] = React.useState(true);
+  const [selectedRoute, setSelectedRoute] = React.useState<PathData | null>(
+    null
+  );
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const fetchRoutes = async () => {
+      try {
+        const { routes: fetchedRoutes, lastDoc: newLastDoc } =
+          await getAllRoutes(6);
+        setRoutes(fetchedRoutes);
+        setLastDoc(newLastDoc);
+        setHasMore(fetchedRoutes.length === 6);
+      } catch (error) {
+        console.error("Error fetching routes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRoutes();
+  }, []);
+
+  // Function to load more routes (for future "Load More" button)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const loadMore = async () => {
+    if (!hasMore || loading) return;
+
+    setLoading(true);
+    try {
+      const { routes: moreRoutes, lastDoc: newLastDoc } = await getAllRoutes(
+        6,
+        lastDoc
+      );
+      setRoutes((prev) => [...prev, ...moreRoutes]);
+      setLastDoc(newLastDoc);
+      setHasMore(moreRoutes.length === 6);
+    } catch (error) {
+      console.error("Error loading more routes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getLocation = (route: PathData): string => {
+    return route.location || "Unknown location";
+  };
+
+  const getRouteImage = (route: PathData): string => {
+    return route.imageUrl || "/scenic1.jpg";
+  };
+
+  const handleRouteClick = async (routeId: string) => {
+    try {
+      const fullRoute = await getRouteById(routeId);
+      setSelectedRoute(fullRoute);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error("Error loading route details:", error);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setTimeout(() => setSelectedRoute(null), 300);
+  };
+
+  if (loading) {
+    return (
+      <div className="mt-8 px-4 sm:px-6 lg:px-8 w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto flex justify-center items-center min-h-[400px]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+          <p className="text-white text-lg">Loading routes...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (routes.length === 0) {
+    return (
+      <div className="mt-8 px-4 sm:px-6 lg:px-8 w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto flex justify-center items-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-white text-xl mb-2">No routes available yet</p>
+          <p className="text-white/70">Be the first to share a scenic route!</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="mt-8 px-4 md:px-8 lg:px-16">
-      <h1 className="text-center mb-2 text-3xl">Discover Routes </h1>
-      <Box sx={{ flexGrow: 1, p: 2 }}>
-        <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-          {routesToShow.map((route) => (
-            <Grid xs={12} sm={6} md={4} key={route.id}>
-              <Card
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  position: "relative",
-                  bgcolor: "white",
-                  color: "text.primary",
-                  overflow: "hidden",
-                  borderRadius: "8px",
-                  p: 0,
-                  "&:hover": {
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
-                    transform: "scale(1.02)",
-                    transition: "all 0.3s ease",
-                  },
-                }}
-              >
-                <Box
-                  sx={{
-                    position: "relative",
-                    width: "100%",
-                    height: 200,
-                    overflow: "hidden",
-                    borderTopLeftRadius: "8px",
-                    borderTopRightRadius: "8px",
-                    "&::before": {
-                      content: '""',
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      backgroundColor: "transparent",
-                      zIndex: 1,
-                    },
-                  }}
+    <div className="mt-8 px-4 sm:px-6 lg:px-8 w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto pb-16">
+      {/* Route Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {routes.map((route, index) => (
+          <div
+            key={route.id}
+            className="group relative overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            style={{
+              animationDelay: `${index * 50}ms`,
+            }}
+          >
+            {/* Image Container */}
+            <div className="relative h-64 overflow-hidden">
+              <Image
+                src={getRouteImage(route)}
+                alt={route.title}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+
+              {/* Waypoint Badge */}
+              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                <span className="text-sm font-semibold text-gray-800">
+                  {route.waypointCount} stops
+                </span>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-5">
+              <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                {route.title}
+              </h3>
+
+              {/* Location */}
+              <div className="flex items-center gap-2 text-gray-600 mb-3">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <Image
-                    src={route.image}
-                    alt={route.name}
-                    fill
-                    sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 33vw"
-                    style={{
-                      objectFit: "cover",
-                      objectPosition: "center",
-                    }}
-                    priority={route.id === "5" || route.id === "6"}
-                    quality={80}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
                   />
-                </Box>
-                <CardContent sx={{ p: 2 }}>
-                  <Typography level="title-lg" sx={{ mb: 0.5 }}>
-                    {route.name}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 0.5,
-                      mb: 1,
-                    }}
-                  >
-                    <LocationOnIcon fontSize="small" />
-                    <Typography level="body-sm">{route.location}</Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 1,
-                    }}
-                  >
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-                    >
-                      <AccessTimeIcon fontSize="small" />
-                      <Typography level="body-sm">{route.duration}</Typography>
-                    </Box>
-                    <Typography level="body-sm">{route.distance}</Typography>
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                <span className="text-sm line-clamp-1">
+                  {getLocation(route)}
+                </span>
+              </div>
+
+              {/* Description */}
+              <p className="text-sm text-gray-600 line-clamp-3 mb-4">
+                {route.description}
+              </p>
+
+              {/* View Button */}
+              <button
+                onClick={() => handleRouteClick(route.id)}
+                className="w-full bg-green-900 hover:bg-green-800 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium"
+              >
+                View Route
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Route Detail Modal */}
+      <RouteModal
+        route={selectedRoute}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }

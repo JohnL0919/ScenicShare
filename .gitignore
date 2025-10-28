@@ -67,3 +67,8 @@ node_modules/
 
 # dataconnect generated files
 .dataconnect
+
+# Large video files (>50MB)
+scenicshare-frontend/public/scenicvid2.mp4
+scenicshare-frontend/public/scenicvid3.mp4
+scenicshare-frontend/public/scenicvid4.mp4

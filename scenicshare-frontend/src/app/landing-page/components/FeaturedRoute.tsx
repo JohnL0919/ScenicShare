@@ -40,6 +40,12 @@ export default function FeaturedRoute({
     return scenicRouteMockData[0];
   }, [routeId, randomize]);
 
+  const handleCardClick = () => {
+    // For now, just show an alert since this uses mock data
+    // In the future, this could navigate to a dedicated route page
+    console.log("Featured route clicked:", route.name);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center w-full max-w-full sm:max-w-lg md:max-w-xl mx-auto py-8 px-4">
       <h1 className="text-center mb-2 text-3xl">Featured Route</h1>
@@ -48,6 +54,7 @@ export default function FeaturedRoute({
       </h4>
       <Card
         variant="outlined"
+        onClick={handleCardClick}
         sx={{
           width: "90%",
           maxWidth: "100%",
@@ -55,6 +62,7 @@ export default function FeaturedRoute({
           overflow: "hidden",
           boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
           transition: "all 0.3s ease",
+          cursor: "pointer",
           "&:hover": {
             transform: "translateY(-8px)",
             boxShadow: "0 12px 24px rgba(0,0,0,0.15)",

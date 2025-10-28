@@ -45,6 +45,25 @@ export function AuthProvider({ children }) {
 
   async function initializeUser(user) {
     if (user) {
+      // Reload user to get the latest emailVerified status
+      try {
+        await user.reload();
+      } catch (error) {
+        console.error("Error reloading user:", error);
+      }
+
+      // Enforce email verification - block access if not verified
+      if (!user.emailVerified) {
+        console.log("User not verified, blocking access");
+        setCurrentUser(null);
+        setUserLoggedIn(false);
+        // Clear session cookie
+        document.cookie =
+          "__session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+        setLoading(false);
+        return;
+      }
+
       setCurrentUser({ ...user });
       setUserLoggedIn(true);
 

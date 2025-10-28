@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Input from "./Input";
 import { registerUser } from "@/lib/firebase/Authentication/EmailAuth";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 export default function RegistrationForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -13,13 +13,13 @@ export default function RegistrationForm() {
   const [acceptTerms, setAcceptTerms] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  // const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     await registerUser(name, email, password, setIsLoading);
-    const t = setTimeout(() => router.push("/login-page"), 4000);
+    // const t = setTimeout(() => router.push("/login-page"), 4000);
     // optional: clear on unmount
-    return () => clearTimeout(t);
+    // return () => clearTimeout(t);
   };
 
   if (isLoading) {
