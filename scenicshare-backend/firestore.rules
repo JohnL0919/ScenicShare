@@ -3,45 +3,48 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Helper function to check authentication
+    // Helper function to check if user is authenticated
     function isAuthenticated() {
       return request.auth != null;
     }
     
     // Helper function to check if user owns the resource
     function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
+      return request.auth.uid == userId;
     }
     
-    // Users collection - users can read/write their own data
-    match /Users/{userId} {
-      allow read, write: if isOwner(userId);
-    }
-    
-    // Paths collection - public routes visible to all, private only to owner
+    // Routes (Paths) collection
     match /Paths/{pathId} {
-      // Anyone can read public paths, owners can read their own (public or private)
-      allow read: if resource.data.isPublic == true 
-        || (isAuthenticated() && resource.data.creatorID == request.auth.uid);
+      // Anyone can read routes (for discovery)
+      allow read: if true;
       
-      // Only authenticated users can create paths
+      // Only authenticated users can create routes
       allow create: if isAuthenticated() 
-        && request.resource.data.creatorID == request.auth.uid;
+                    && request.resource.data.creatorID == request.auth.uid;
       
-      // Only the creator can update or delete their paths
+      // Only the creator can update or delete their routes
       allow update, delete: if isAuthenticated() 
-        && resource.data.creatorID == request.auth.uid;
+                            && resource.data.creatorID == request.auth.uid;
       
       // Waypoints subcollection
       match /waypoints/{waypointId} {
-        // Anyone can read waypoints of public paths, owners can read their own
-        allow read: if get(/databases/$(database)/documents/Paths/$(pathId)).data.isPublic == true
-          || (isAuthenticated() && get(/databases/$(database)/documents/Paths/$(pathId)).data.creatorID == request.auth.uid);
+        // Anyone can read waypoints (for viewing routes)
+        allow read: if true;
         
-        // Only path creator can write waypoints
-        allow write: if isAuthenticated() 
-          && get(/databases/$(database)/documents/Paths/$(pathId)).data.creatorID == request.auth.uid;
+        // Only authenticated users can create waypoints for their routes
+        allow create: if isAuthenticated() 
+                      && request.resource.data.creatorID == request.auth.uid;
+        
+        // Only the creator can update or delete waypoints
+        allow update, delete: if isAuthenticated() 
+                              && resource.data.creatorID == request.auth.uid;
       }
+    }
+    
+    // Users collection (if you add user profiles later)
+    match /Users/{userId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && request.auth.uid == userId;
     }
   }
 }
