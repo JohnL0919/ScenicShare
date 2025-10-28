@@ -2,13 +2,6 @@
 
 import * as React from "react";
 import Image from "next/image";
-import Box from "@mui/joy/Box";
-import Grid from "@mui/joy/Grid";
-import Card from "@mui/joy/Card";
-import CardContent from "@mui/joy/CardContent";
-import Typography from "@mui/joy/Typography";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { getAllRoutes, PathData } from "@/services/routes";
 import { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 
@@ -58,61 +51,20 @@ export default function DiscoverRoute() {
     }
   };
 
-  // Helper function to get location string
   const getLocation = (route: PathData): string => {
-    // Always use the saved location field (no waypoint dependency)
-    if (route.location) {
-      return route.location;
-    }
-
-    return "Unknown location";
+    return route.location || "Unknown location";
   };
 
-  // Helper function to calculate approximate distance
-  // Note: Uses waypoint count as proxy since waypoints are lazy-loaded
-  const calculateDistance = (route: PathData): string => {
-    if (route.waypointCount < 2) {
-      return "N/A";
-    }
-
-    // Estimate ~20km per waypoint segment (rough average for scenic routes)
-    const estimatedDistance = (route.waypointCount - 1) * 20;
-    return `~${estimatedDistance} km`;
-  };
-
-  // Helper function to estimate duration
-  const estimateDuration = (route: PathData): string => {
-    if (route.waypointCount < 2) {
-      return "N/A";
-    }
-
-    const estimatedDistance = (route.waypointCount - 1) * 20;
-    // Assume average speed of 50 km/h for scenic routes
-    const hours = estimatedDistance / 50;
-
-    if (hours < 1) {
-      return `${Math.round(hours * 60)} mins`;
-    }
-    return `${hours.toFixed(1)} hours`;
-  };
-
-  // Helper function to get route image
   const getRouteImage = (route: PathData): string => {
-    // Use saved image if available
-    if (route.imageUrl) {
-      return route.imageUrl;
-    }
-
-    // Fallback to a default scenic image
-    return "/scenic1.jpg";
+    return route.imageUrl || "/scenic1.jpg";
   };
 
   if (loading) {
     return (
-      <div className="mt-8 px-4 md:px-8 lg:px-16">
-        <h1 className="text-center mb-2 text-3xl">Discover Routes</h1>
-        <div className="flex justify-center items-center h-64">
-          <Typography level="body-lg">Loading routes...</Typography>
+      <div className="mt-8 px-4 sm:px-6 lg:px-8 w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto flex justify-center items-center min-h-[400px]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-white/30 border-t-white rounded-full animate-spin" />
+          <p className="text-white text-lg">Loading routes...</p>
         </div>
       </div>
     );
@@ -120,116 +72,92 @@ export default function DiscoverRoute() {
 
   if (routes.length === 0) {
     return (
-      <div className="mt-8 px-4 md:px-8 lg:px-16">
-        <h1 className="text-center mb-2 text-3xl">Discover Routes</h1>
-        <div className="flex justify-center items-center h-64 text-white">
-          <Typography level="body-lg">
-            No routes available yet. Create the first one!
-          </Typography>
+      <div className="mt-8 px-4 sm:px-6 lg:px-8 w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto flex justify-center items-center min-h-[400px]">
+        <div className="text-center">
+          <p className="text-white text-xl mb-2">No routes available yet</p>
+          <p className="text-white/70">Be the first to share a scenic route!</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="mt-8 px-4 md:px-8 lg:px-16">
-      <h1 className="text-center mb-2 text-3xl">Discover Routes</h1>
-      <Box sx={{ flexGrow: 1, p: 2 }}>
-        <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-          {routes.map((route) => (
-            <Grid xs={12} sm={6} md={4} key={route.id}>
-              <Card
-                sx={{
-                  width: "100%",
-                  height: "100%",
-                  position: "relative",
-                  bgcolor: "white",
-                  color: "text.primary",
-                  overflow: "hidden",
-                  borderRadius: "8px",
-                  p: 0,
-                  cursor: "pointer",
-                  "&:hover": {
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
-                    transform: "scale(1.02)",
-                    transition: "all 0.3s ease",
-                  },
-                }}
-              >
-                <Box
-                  sx={{
-                    position: "relative",
-                    width: "100%",
-                    height: 200,
-                    overflow: "hidden",
-                    borderTopLeftRadius: "8px",
-                    borderTopRightRadius: "8px",
-                    bgcolor: "#e0e0e0",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
+    <div className="mt-8 px-4 sm:px-6 lg:px-8 w-full sm:w-[70%] md:w-[60%] lg:w-[90%] xl:w-[90%] mx-auto pb-16">
+      {/* Route Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {routes.map((route, index) => (
+          <div
+            key={route.id}
+            className="group relative overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+            style={{
+              animationDelay: `${index * 50}ms`,
+            }}
+          >
+            {/* Image Container */}
+            <div className="relative h-64 overflow-hidden">
+              <Image
+                src={getRouteImage(route)}
+                alt={route.title}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+
+              {/* Waypoint Badge */}
+              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                <span className="text-sm font-semibold text-gray-800">
+                  {route.waypointCount} stops
+                </span>
+              </div>
+            </div>
+
+            {/* Content */}
+            <div className="p-5">
+              <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                {route.title}
+              </h3>
+
+              {/* Location */}
+              <div className="flex items-center gap-2 text-gray-600 mb-3">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <Image
-                    src={getRouteImage(route)}
-                    alt={route.title}
-                    fill
-                    style={{
-                      objectFit: "cover",
-                      objectPosition: "center",
-                    }}
-                    sizes="(max-width: 600px) 100vw, (max-width: 960px) 50vw, 33vw"
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
                   />
-                </Box>
-                <CardContent sx={{ p: 2 }}>
-                  <Typography level="title-lg" sx={{ mb: 0.5 }}>
-                    {route.title}
-                  </Typography>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 0.5,
-                      mb: 1,
-                    }}
-                  >
-                    <LocationOnIcon fontSize="small" />
-                    <Typography level="body-sm">
-                      {getLocation(route)}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      mb: 1,
-                    }}
-                  >
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-                    >
-                      <AccessTimeIcon fontSize="small" />
-                      <Typography level="body-sm">
-                        {estimateDuration(route)}
-                      </Typography>
-                    </Box>
-                    <Typography level="body-sm">
-                      {calculateDistance(route)}
-                    </Typography>
-                  </Box>
-                  <Typography
-                    level="body-xs"
-                    sx={{ color: "text.secondary", mt: 1 }}
-                  >
-                    {route.waypointCount} waypoint
-                    {route.waypointCount !== 1 ? "s" : ""}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                <span className="text-sm line-clamp-1">
+                  {getLocation(route)}
+                </span>
+              </div>
+
+              {/* Description */}
+              <p className="text-sm text-gray-600 line-clamp-3 mb-4">
+                {route.description}
+              </p>
+
+              {/* View Button */}
+              <button className="w-full bg-green-900 hover:bg-green-800 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium">
+                View Route
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
