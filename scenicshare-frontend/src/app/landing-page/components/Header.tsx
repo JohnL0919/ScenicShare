@@ -16,9 +16,9 @@ export default function Header() {
         journey awaits.
       </h5>
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-5 w-full">
-        <div className="w-full sm:flex-1">
+        {/* <div className="w-full sm:flex-1">
           <SearchBar />
-        </div>
+        </div> */}
         <div className="w-full sm:w-32">
           <Button text="Discover" variant="primary" />
         </div>
