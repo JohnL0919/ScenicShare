@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { getAllRoutes, PathData } from "@/services/routes";
 import { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 
@@ -82,81 +83,106 @@ export default function DiscoverRoute() {
   }
 
   return (
-    <div className="mt-8 px-4 sm:px-6 lg:px-8 lg:ml-20 pb-16">
-      {/* Route Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {routes.map((route, index) => (
-          <div
-            key={route.id}
-            className="group relative overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
-            style={{
-              animationDelay: `${index * 50}ms`,
-            }}
+    <div className="mt-8 pb-16">
+      {/* Discover Routes Section Title */}
+      <div className="flex flex-col items-center justify-center mb-8 gap-2 px-4">
+        <h1 className="text-3xl">Discover Routes</h1>
+        <Link
+          href="/discover-page"
+          className="text-sm text-green-700 hover:text-green-600 transition-colors duration-200 flex items-center gap-1"
+        >
+          more
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4"
+            viewBox="0 0 20 20"
+            fill="currentColor"
           >
-            {/* Image Container */}
-            <div className="relative h-64 overflow-hidden">
-              <Image
-                src={getRouteImage(route)}
-                alt={route.title}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
-              />
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+            <path
+              fillRule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </Link>
+      </div>
 
-              {/* Waypoint Badge */}
-              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
-                <span className="text-sm font-semibold text-gray-800">
-                  {route.waypointCount} stops
-                </span>
-              </div>
-            </div>
+      {/* Route Cards Grid */}
+      <div className="px-4 sm:px-6 lg:px-8 lg:ml-20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {routes.map((route, index) => (
+            <div
+              key={route.id}
+              className="group relative overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              style={{
+                animationDelay: `${index * 50}ms`,
+              }}
+            >
+              {/* Image Container */}
+              <div className="relative h-64 overflow-hidden">
+                <Image
+                  src={getRouteImage(route)}
+                  alt={route.title}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                />
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-            {/* Content */}
-            <div className="p-5">
-              <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
-                {route.title}
-              </h3>
-
-              {/* Location */}
-              <div className="flex items-center gap-2 text-gray-600 mb-3">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-                <span className="text-sm line-clamp-1">
-                  {getLocation(route)}
-                </span>
+                {/* Waypoint Badge */}
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                  <span className="text-sm font-semibold text-gray-800">
+                    {route.waypointCount} stops
+                  </span>
+                </div>
               </div>
 
-              {/* Description */}
-              <p className="text-sm text-gray-600 line-clamp-3 mb-4">
-                {route.description}
-              </p>
+              {/* Content */}
+              <div className="p-5">
+                <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                  {route.title}
+                </h3>
 
-              {/* View Button */}
-              <button className="w-full bg-green-900 hover:bg-green-800 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium">
-                View Route
-              </button>
+                {/* Location */}
+                <div className="flex items-center gap-2 text-gray-600 mb-3">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  <span className="text-sm line-clamp-1">
+                    {getLocation(route)}
+                  </span>
+                </div>
+
+                {/* Description */}
+                <p className="text-sm text-gray-600 line-clamp-3 mb-4">
+                  {route.description}
+                </p>
+
+                {/* View Button */}
+                <button className="w-full bg-green-900 hover:bg-green-800 text-white py-2 px-4 rounded-lg transition-colors duration-200 text-sm font-medium">
+                  View Route
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
