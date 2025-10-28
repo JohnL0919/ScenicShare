@@ -10,8 +10,11 @@ import {
   getCountFromServer,
   query,
   where,
-  orderBy,
   limit,
+  orderBy,
+  startAfter,
+  QueryDocumentSnapshot,
+  DocumentData,
 } from "firebase/firestore";
 
 export interface Waypoint {
@@ -318,42 +321,54 @@ export async function getUserRouteCount(userId: string): Promise<number> {
 }
 
 /**
- * -=-=-=-=-=-=-=-=-=-=-=-=- Get all public routes -=-=-=-=-=-=-=-=--=-=-=-=--=-=-
+ * -=-=-=-=-=-=-=-=-=-=-=-=- Get all public routes (SCALABLE VERSION) -=-=-=-=-=-=-=-=--=-=-=-=--=-=-
+ *
+ * Performance optimizations:
+ * 1. Uses Firestore orderBy with composite index (server-side sorting)
+ * 2. Fetches only the requested number of routes (no over-fetching)
+ * 3. Supports pagination with cursor-based approach
+ * 4. Lazy-loads waypoints (only when needed, not in list view)
+ *
+ * @param limitCount - Number of routes to fetch (default: 6)
+ * @param lastDoc - Last document from previous page (for pagination)
+ * @returns Promise<{ routes: PathData[], lastDoc: QueryDocumentSnapshot | null }>
  */
 export async function getAllRoutes(
-  limitCount: number = 6
-): Promise<PathData[]> {
+  limitCount: number = 6,
+  lastDoc?: QueryDocumentSnapshot<DocumentData> | null
+): Promise<{
+  routes: PathData[];
+  lastDoc: QueryDocumentSnapshot<DocumentData> | null;
+}> {
   try {
     const pathsRef = collection(db, "Paths");
-    const q = query(
+
+    // Build query with server-side sorting and pagination
+    // Note: This requires a composite index on (isPublic, createdAt)
+    let q = query(
       pathsRef,
       where("isPublic", "==", true),
       orderBy("createdAt", "desc"),
       limit(limitCount)
     );
 
+    // If we have a cursor, start after it (pagination)
+    if (lastDoc) {
+      q = query(
+        pathsRef,
+        where("isPublic", "==", true),
+        orderBy("createdAt", "desc"),
+        startAfter(lastDoc),
+        limit(limitCount)
+      );
+    }
+
     const querySnapshot = await getDocs(q);
     const paths: PathData[] = [];
 
+    // Process routes WITHOUT fetching waypoints (lazy loading)
     for (const docSnapshot of querySnapshot.docs) {
       const data = docSnapshot.data();
-
-      // Fetch waypoints for this path
-      const waypointsRef = collection(
-        doc(db, "Paths", docSnapshot.id),
-        "waypoints"
-      );
-      const waypointsSnapshot = await getDocs(waypointsRef);
-      const waypoints: Waypoint[] = waypointsSnapshot.docs.map(
-        (wpDoc) =>
-          ({
-            id: wpDoc.id,
-            ...wpDoc.data(),
-          } as Waypoint)
-      );
-
-      // Sort waypoints by order
-      waypoints.sort((a, b) => (a.order || 0) - (b.order || 0));
 
       paths.push({
         id: docSnapshot.id,
@@ -362,16 +377,99 @@ export async function getAllRoutes(
         creatorID: data.creatorID,
         createdAt: data.createdAt?.toDate() || new Date(),
         waypointCount: data.waypointCount,
-        waypoints,
+        // Don't fetch waypoints here - they're loaded on-demand
+        waypoints: undefined,
         imageUrl: data.imageUrl || "",
         location: data.location || "",
         isPublic: data.isPublic || false,
       });
     }
 
-    return paths;
+    // Return routes and pagination cursor
+    const lastVisible =
+      querySnapshot.docs[querySnapshot.docs.length - 1] || null;
+
+    return {
+      routes: paths,
+      lastDoc: lastVisible,
+    };
   } catch (error) {
     console.error("Error fetching routes:", error);
+
+    // If composite index doesn't exist, fall back to in-memory sorting
+    if (error instanceof Error && error.message.includes("index")) {
+      console.warn(
+        "Composite index not found, falling back to in-memory sorting"
+      );
+      return getAllRoutesLegacy(limitCount);
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * -=-=-=-=-=-=-=-=-=-=-=-=- Legacy version (fallback without index) -=-=-=-=-=-=-=-=--=-=-=-=--=-=-
+ * This is the old approach - kept as fallback if composite index isn't created yet
+ */
+async function getAllRoutesLegacy(
+  limitCount: number = 6
+): Promise<{ routes: PathData[]; lastDoc: null }> {
+  const pathsRef = collection(db, "Paths");
+  const q = query(pathsRef, where("isPublic", "==", true));
+
+  const querySnapshot = await getDocs(q);
+  const paths: PathData[] = [];
+
+  for (const docSnapshot of querySnapshot.docs) {
+    const data = docSnapshot.data();
+
+    paths.push({
+      id: docSnapshot.id,
+      title: data.title,
+      description: data.description,
+      creatorID: data.creatorID,
+      createdAt: data.createdAt?.toDate() || new Date(),
+      waypointCount: data.waypointCount,
+      waypoints: undefined,
+      imageUrl: data.imageUrl || "",
+      location: data.location || "",
+      isPublic: data.isPublic || false,
+    });
+  }
+
+  // Sort by createdAt in memory (descending - newest first)
+  paths.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+  return {
+    routes: paths.slice(0, limitCount),
+    lastDoc: null, // No pagination support in legacy mode
+  };
+}
+
+/**
+ * -=-=-=-=-=-=-=-=-=-=-=-=- Fetch waypoints for a specific route -=-=-=-=-=-=-=-=--=-=-=-=--=-=-
+ * Separated function for lazy loading waypoints when user clicks on a route
+ */
+export async function getRouteWaypoints(routeId: string): Promise<Waypoint[]> {
+  try {
+    const waypointsRef = collection(doc(db, "Paths", routeId), "waypoints");
+    const waypointsSnapshot = await getDocs(waypointsRef);
+
+    const waypoints: Waypoint[] = waypointsSnapshot.docs.map(
+      (wpDoc) =>
+        ({
+          id: wpDoc.id,
+          ...wpDoc.data(),
+        } as Waypoint)
+    );
+
+    // Sort waypoints by order
+    waypoints.sort((a, b) => (a.order || 0) - (b.order || 0));
+
+    return waypoints;
+  } catch (error) {
+    console.error("Error fetching waypoints:", error);
     throw error;
   }
 }

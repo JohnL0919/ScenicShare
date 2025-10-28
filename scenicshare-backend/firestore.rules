@@ -18,10 +18,11 @@ service cloud.firestore {
       allow read, write: if isOwner(userId);
     }
     
-    // Paths collection - authenticated users can create, owners can manage
+    // Paths collection - public routes visible to all, private only to owner
     match /Paths/{pathId} {
-      // Anyone authenticated can read paths (for discovery)
-      allow read: if isAuthenticated();
+      // Anyone can read public paths, owners can read their own (public or private)
+      allow read: if resource.data.isPublic == true 
+        || (isAuthenticated() && resource.data.creatorID == request.auth.uid);
       
       // Only authenticated users can create paths
       allow create: if isAuthenticated() 
@@ -33,8 +34,9 @@ service cloud.firestore {
       
       // Waypoints subcollection
       match /waypoints/{waypointId} {
-        // Anyone authenticated can read waypoints
-        allow read: if isAuthenticated();
+        // Anyone can read waypoints of public paths, owners can read their own
+        allow read: if get(/databases/$(database)/documents/Paths/$(pathId)).data.isPublic == true
+          || (isAuthenticated() && get(/databases/$(database)/documents/Paths/$(pathId)).data.creatorID == request.auth.uid);
         
         // Only path creator can write waypoints
         allow write: if isAuthenticated() 

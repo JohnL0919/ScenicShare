@@ -51,7 +51,13 @@ export const loginUserWithEmailAndPassword = async (
     );
     const results = userCredential.user;
 
-    if (!results.emailVerified) {
+    // Force reload to get latest emailVerified status
+    await results.reload();
+
+    // Re-get the user after reload to ensure we have the latest data
+    const currentUser = auth.currentUser;
+
+    if (!currentUser || !currentUser.emailVerified) {
       // Sign them out immediately - no access until verified
       await auth.signOut();
       showErrorMessage(
@@ -61,7 +67,7 @@ export const loginUserWithEmailAndPassword = async (
     }
 
     showSuccessMessage("Login successful");
-    return results;
+    return currentUser;
   } catch (error) {
     showFirebaseError(error);
     return null;

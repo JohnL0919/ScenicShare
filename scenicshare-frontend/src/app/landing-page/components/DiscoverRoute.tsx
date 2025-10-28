@@ -10,16 +10,23 @@ import Typography from "@mui/joy/Typography";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { getAllRoutes, PathData } from "@/services/routes";
+import { QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 
 export default function DiscoverRoute() {
   const [routes, setRoutes] = React.useState<PathData[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const [lastDoc, setLastDoc] =
+    React.useState<QueryDocumentSnapshot<DocumentData> | null>(null);
+  const [hasMore, setHasMore] = React.useState(true);
 
   React.useEffect(() => {
     const fetchRoutes = async () => {
       try {
-        const fetchedRoutes = await getAllRoutes(6);
+        const { routes: fetchedRoutes, lastDoc: newLastDoc } =
+          await getAllRoutes(6);
         setRoutes(fetchedRoutes);
+        setLastDoc(newLastDoc);
+        setHasMore(fetchedRoutes.length === 6); // If we got less than requested, no more pages
       } catch (error) {
         console.error("Error fetching routes:", error);
       } finally {
@@ -30,68 +37,60 @@ export default function DiscoverRoute() {
     fetchRoutes();
   }, []);
 
+  // Function to load more routes (for future "Load More" button)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const loadMore = async () => {
+    if (!hasMore || loading) return;
+
+    setLoading(true);
+    try {
+      const { routes: moreRoutes, lastDoc: newLastDoc } = await getAllRoutes(
+        6,
+        lastDoc
+      );
+      setRoutes((prev) => [...prev, ...moreRoutes]);
+      setLastDoc(newLastDoc);
+      setHasMore(moreRoutes.length === 6);
+    } catch (error) {
+      console.error("Error loading more routes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Helper function to get location string
   const getLocation = (route: PathData): string => {
-    // Use the saved location if available
+    // Always use the saved location field (no waypoint dependency)
     if (route.location) {
       return route.location;
     }
 
-    // Fall back to waypoint-based location
-    if (!route.waypoints || route.waypoints.length === 0) {
-      return "Unknown location";
-    }
-    const first = route.waypoints[0];
-    const last = route.waypoints[route.waypoints.length - 1];
-
-    if (first.city && first.state) {
-      if (route.waypoints.length === 1) {
-        return `${first.city}, ${first.state}`;
-      }
-      return `${first.city} to ${last.city || last.name}`;
-    }
-
-    return first.name;
+    return "Unknown location";
   };
 
   // Helper function to calculate approximate distance
+  // Note: Uses waypoint count as proxy since waypoints are lazy-loaded
   const calculateDistance = (route: PathData): string => {
-    if (!route.waypoints || route.waypoints.length < 2) {
+    // With lazy loading, we estimate based on waypoint count
+    // Alternative: could store pre-calculated distance in route document
+    if (route.waypointCount < 2) {
       return "N/A";
     }
 
-    // Calculate total distance between consecutive waypoints
-    let totalDistance = 0;
-    for (let i = 0; i < route.waypoints.length - 1; i++) {
-      const wp1 = route.waypoints[i];
-      const wp2 = route.waypoints[i + 1];
-
-      // Haversine formula for distance calculation
-      const R = 6371; // Earth's radius in km
-      const dLat = ((wp2.lat - wp1.lat) * Math.PI) / 180;
-      const dLng = ((wp2.lng - wp1.lng) * Math.PI) / 180;
-      const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos((wp1.lat * Math.PI) / 180) *
-          Math.cos((wp2.lat * Math.PI) / 180) *
-          Math.sin(dLng / 2) *
-          Math.sin(dLng / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      totalDistance += R * c;
-    }
-
-    return `${Math.round(totalDistance)} km`;
+    // Estimate ~20km per waypoint segment (rough average for scenic routes)
+    const estimatedDistance = (route.waypointCount - 1) * 20;
+    return `~${estimatedDistance} km`;
   };
 
   // Helper function to estimate duration
   const estimateDuration = (route: PathData): string => {
-    if (!route.waypoints || route.waypoints.length < 2) {
+    if (route.waypointCount < 2) {
       return "N/A";
     }
 
-    const distance = parseFloat(calculateDistance(route));
+    const estimatedDistance = (route.waypointCount - 1) * 20;
     // Assume average speed of 50 km/h for scenic routes
-    const hours = distance / 50;
+    const hours = estimatedDistance / 50;
 
     if (hours < 1) {
       return `${Math.round(hours * 60)} mins`;
