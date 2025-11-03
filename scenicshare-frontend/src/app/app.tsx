@@ -13,12 +13,12 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 // Import placeholders for pages not yet created
 const NotFound = () => <div>404 Page Not Found</div>;
 
-interface State {
-  userInfo: {
-    isLoggedIn: boolean;
-    token: string;
-  };
-}
+// interface State {
+//   userInfo: {
+//     isLoggedIn: boolean;
+//     token: string;
+//   };
+// }
 
 function App() {
   return (

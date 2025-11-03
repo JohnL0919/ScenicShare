@@ -4,7 +4,7 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import L from "leaflet";
 import Button from "./components/Button";
 import ControlPanel from "./components/ControlPanel";
@@ -20,7 +20,6 @@ interface Waypoint {
 }
 
 export default function PathEditorPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const routeId = searchParams.get("id");
   const { currentUser } = useAuth();

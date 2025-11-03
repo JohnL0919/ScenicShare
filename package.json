@@ -23,7 +23,7 @@
     "@mui/joy": "^5.0.0-beta.52",
     "@mui/material": "^7.3.2",
     "@types/leaflet-draw": "^1.0.13",
-    "firebase": "^12.3.0",
+    "firebase": "^12.4.0",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
     "next": "15.5.3",

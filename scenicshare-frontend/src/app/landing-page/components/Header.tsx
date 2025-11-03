@@ -1,4 +1,4 @@
-import SearchBar from "./SearchBar";
+// import SearchBar from "./SearchBar";
 import Button from "./Button";
 
 export default function Header() {
