@@ -16,7 +16,7 @@ export default function HomePage() {
           <source src="/scenicvid4.mp4" />
         </video>
       </div>
-      <main className="relative z-10 flex-grow flex flex-col">
+      <main className="relative z-10 grow flex flex-col">
         <NavBar />
         <Header />
         <DiscoverRoute />

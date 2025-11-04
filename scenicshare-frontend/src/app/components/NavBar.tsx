@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useAuth } from "@/contexts/authContexts";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import React from "react";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
