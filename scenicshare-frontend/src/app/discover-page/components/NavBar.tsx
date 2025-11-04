@@ -10,7 +10,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { logout } = useAuth();
+  const { logout, currentUser } = useAuth();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -50,14 +50,29 @@ export default function NavBar() {
             </div>
           </div>
 
-          <div className="hidden lg:flex lg:items-center lg:space-x-2 xl:space-x-4">
-            <button
-              onClick={handleLogout}
-              className="w-full px-4 py-2 text-sm font-medium text-white bg-blur hover:bg-red-700 rounded-lg transition-colors duration-200"
-            >
-              Log Out
-            </button>
-          </div>
+          {currentUser ? (
+            <div className="hidden lg:flex lg:items-center lg:space-x-2 xl:space-x-4">
+              <button
+                onClick={handleLogout}
+                className="w-full px-4 py-2 text-sm font-medium text-white bg-blur hover:bg-red-700 rounded-lg transition-colors duration-200"
+              >
+                Log Out
+              </button>
+            </div>
+          ) : (
+            <div className="hidden lg:flex lg:items-center lg:space-x-2 xl:space-x-4">
+              <Link href="/login-page">
+                <button className="px-4 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-colors duration-200">
+                  Log In
+                </button>
+              </Link>
+              <Link href="/registration-page">
+                <button className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors duration-200">
+                  Sign Up
+                </button>
+              </Link>
+            </div>
+          )}
 
           {/* Menu Button */}
           <div className="lg:hidden">
@@ -102,12 +117,27 @@ export default function NavBar() {
             <Button href="/discover-page" text="Discover" />
             <Button href="/protected/myRoutes-page" text="My Routes" />
           </div>
-          <button
-            onClick={handleLogout}
-            className="w-full px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors duration-200"
-          >
-            Log Out
-          </button>
+          {currentUser ? (
+            <button
+              onClick={handleLogout}
+              className="w-full px-4 py-2 text-sm font-medium text-white bg-blur hover:bg-red-700 rounded-lg transition-colors duration-200"
+            >
+              Log Out
+            </button>
+          ) : (
+            <div className="space-y-2">
+              <Link href="/login-page">
+                <button className="w-full px-4 py-2 text-sm font-medium text-white hover:bg-white/10 rounded-lg transition-colors duration-200">
+                  Log In
+                </button>
+              </Link>
+              <Link href="/registration-page">
+                <button className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors duration-200">
+                  Sign Up
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </nav>
