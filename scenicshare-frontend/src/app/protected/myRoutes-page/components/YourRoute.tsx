@@ -24,6 +24,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import NavigationIcon from "@mui/icons-material/Navigation";
 import LockIcon from "@mui/icons-material/Lock";
 import PublicIcon from "@mui/icons-material/Public";
+import {
+  checkLocationPermission,
+  requestLocationPermission,
+} from "@/lib/firebase/location";
+import toast from "react-hot-toast";
+import LocationPermissionModal from "@/components/LocationPermissionModal";
 
 export default function YourRoute() {
   const router = useRouter();
@@ -34,6 +40,8 @@ export default function YourRoute() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [routeToDelete, setRouteToDelete] = useState<PathData | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [showLocationModal, setShowLocationModal] = useState(false);
+  const [pendingRoute, setPendingRoute] = useState<PathData | null>(null);
 
   useEffect(() => {
     const fetchRoutes = async () => {
@@ -120,31 +128,143 @@ export default function YourRoute() {
     return "/scenic1.jpg";
   };
 
-  const generateGoogleMapsUrl = (route: PathData): string => {
+  const generateGoogleMapsUrl = (
+    route: PathData,
+    userLocation?: { lat: number; lng: number }
+  ): string => {
     if (!route.waypoints || route.waypoints.length < 2) {
       return "";
     }
 
-    const startWaypoint = route.waypoints[0];
-    const endWaypoint = route.waypoints[route.waypoints.length - 1];
+    // Use user's current location as origin if available, otherwise use first waypoint
+    const origin = userLocation
+      ? `${userLocation.lat},${userLocation.lng}`
+      : `${route.waypoints[0].lat},${route.waypoints[0].lng}`;
 
-    if (route.waypoints.length > 2) {
-      const intermediateWaypoints = route.waypoints
-        .slice(1, -1)
+    const endWaypoint = route.waypoints[route.waypoints.length - 1];
+    const destination = `${endWaypoint.lat},${endWaypoint.lng}`;
+
+    // Include all waypoints if using user location, otherwise skip first waypoint
+    const waypointsToUse = userLocation
+      ? route.waypoints
+      : route.waypoints.slice(1, -1);
+
+    if (waypointsToUse.length > 0) {
+      const intermediateWaypoints = waypointsToUse
+        .slice(0, -1) // Exclude last waypoint (destination)
         .map((wp) => `${wp.lat},${wp.lng}`)
         .join("|");
 
-      return `https://www.google.com/maps/dir/?api=1&origin=${startWaypoint.lat},${startWaypoint.lng}&destination=${endWaypoint.lat},${endWaypoint.lng}&waypoints=${intermediateWaypoints}&travelmode=driving`;
+      return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${intermediateWaypoints}&travelmode=driving`;
     }
 
-    return `https://www.google.com/maps/dir/?api=1&origin=${startWaypoint.lat},${startWaypoint.lng}&destination=${endWaypoint.lat},${endWaypoint.lng}&travelmode=driving`;
+    return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&travelmode=driving`;
   };
 
-  const handleRouteClick = (route: PathData) => {
-    const mapsUrl = generateGoogleMapsUrl(route);
-    if (mapsUrl) {
-      window.open(mapsUrl, "_blank");
+  const handleRouteClick = async (route: PathData) => {
+    if (!currentUser?.uid) {
+      toast.error("You must be logged in to start navigation");
+      return;
     }
+
+    try {
+      // Check location permission first
+      const hasPermission = await checkLocationPermission(currentUser.uid);
+
+      if (!hasPermission) {
+        // Show location permission modal
+        setPendingRoute(route);
+        setShowLocationModal(true);
+        return;
+      }
+
+      // Get user's current location
+      let userLocation: { lat: number; lng: number } | undefined;
+      try {
+        const position = await new Promise<GeolocationPosition>(
+          (resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+              enableHighAccuracy: true,
+              timeout: 5000,
+              maximumAge: 0,
+            });
+          }
+        );
+        userLocation = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+      } catch (error) {
+        console.error("Could not get current location:", error);
+        // Continue without user location - will use first waypoint
+      }
+
+      // Proceed with navigation
+      const mapsUrl = generateGoogleMapsUrl(route, userLocation);
+      if (mapsUrl) {
+        window.open(mapsUrl, "_blank");
+      } else {
+        toast.error(
+          "This route needs at least 2 waypoints to start navigation."
+        );
+      }
+    } catch (error) {
+      console.error("Error checking location permission:", error);
+      toast.error("Failed to check location permission");
+    }
+  };
+
+  const handleAllowLocation = async () => {
+    if (!currentUser?.uid || !pendingRoute) return;
+
+    try {
+      const granted = await requestLocationPermission(currentUser.uid);
+
+      if (granted) {
+        toast.success("Location access granted!");
+        setShowLocationModal(false);
+
+        // Get user's current location
+        let userLocation: { lat: number; lng: number } | undefined;
+        try {
+          const position = await new Promise<GeolocationPosition>(
+            (resolve, reject) => {
+              navigator.geolocation.getCurrentPosition(resolve, reject, {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0,
+              });
+            }
+          );
+          userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+        } catch (error) {
+          console.error("Could not get current location:", error);
+        }
+
+        // Now start navigation with the pending route and user location
+        const mapsUrl = generateGoogleMapsUrl(pendingRoute, userLocation);
+        if (mapsUrl) {
+          window.open(mapsUrl, "_blank");
+        }
+        setPendingRoute(null);
+      } else {
+        toast.error("Location access denied by browser");
+        setShowLocationModal(false);
+        setPendingRoute(null);
+      }
+    } catch (error) {
+      console.error("Error granting location permission:", error);
+      toast.error("Failed to update location permission");
+    }
+  };
+
+  const handleDenyLocation = () => {
+    setShowLocationModal(false);
+    setPendingRoute(null);
+    toast("Location access is required for navigation", { icon: "ℹ️" });
   };
 
   if (loading) {
@@ -454,6 +574,13 @@ export default function YourRoute() {
           </Box>
         </ModalDialog>
       </Modal>
+
+      {/* Location Permission Modal */}
+      <LocationPermissionModal
+        isOpen={showLocationModal}
+        onAllow={handleAllowLocation}
+        onDeny={handleDenyLocation}
+      />
     </div>
   );
 }
