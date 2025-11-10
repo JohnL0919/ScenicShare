@@ -43,7 +43,7 @@ export default function FeaturedRoute({
   const handleCardClick = () => {
     // For now, just show an alert since this uses mock data
     // In the future, this could navigate to a dedicated route page
-    console.log("Featured route clicked:", route.name);
+    // console.log("Featured route clicked:", route.name);
   };
 
   return (

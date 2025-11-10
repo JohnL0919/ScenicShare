@@ -509,7 +509,6 @@ export default function YourRoute() {
                     <Button
                       variant="solid"
                       color="primary"
-                      startDecorator={<NavigationIcon />}
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRouteClick(route);
