@@ -13,7 +13,7 @@ export default function DiscoverPage() {
           loop
           className="w-full h-full object-cover opacity-50"
         >
-          <source src="/scenicvid4.mp4" />
+          <source src="https://firebasestorage.googleapis.com/v0/b/scenicshare-c3d7c.appspot.com/o/videos%2Fscenicvid4.mp4?alt=media" />
         </video>
       </div>
       <main className="relative z-10 grow flex flex-col">
