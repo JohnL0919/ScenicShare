@@ -12,10 +12,10 @@ export default function DiscoverPage() {
           muted
           loop
           playsInline
-          className="w-full h-full object-cover opacity-50"
+          className="w-full h-full object-cover opacity-50 blur-xs"
         >
-          <source 
-            src="https://firebasestorage.googleapis.com/v0/b/scenicshare-c3d7c.firebasestorage.app/o/videos%2Fscenicvid4.mp4?alt=media" 
+          <source
+            src="https://firebasestorage.googleapis.com/v0/b/scenicshare-c3d7c.firebasestorage.app/o/videos%2Fscenicvid4.mp4?alt=media"
             type="video/mp4"
           />
           Your browser does not support the video tag.
