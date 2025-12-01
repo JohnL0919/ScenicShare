@@ -12,12 +12,11 @@ export default function HomePage() {
           muted
           loop
           playsInline
+          preload="auto"
           className="w-full h-full object-cover opacity-50 blur-xs"
         >
-          <source
-            src="https://firebasestorage.googleapis.com/v0/b/scenicshare-c3d7c.firebasestorage.app/o/videos%2Fscenicvid4.mp4?alt=media"
-            type="video/mp4"
-          />
+          <source src="/scenicvid4.webm" type="video/webm" />
+          <source src="/scenicvid4.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>

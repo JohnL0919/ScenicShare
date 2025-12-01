@@ -7,19 +7,12 @@ export default function DiscoverPage() {
   return (
     <div className="relative min-h-screen flex flex-col">
       <div className="fixed inset-0 w-full h-full z-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover opacity-50 blur-xs"
-        >
-          <source
-            src="https://firebasestorage.googleapis.com/v0/b/scenicshare-c3d7c.firebasestorage.app/o/videos%2Fscenicvid4.mp4?alt=media"
-            type="video/mp4"
-          />
-          Your browser does not support the video tag.
-        </video>
+        <div
+          className="w-full h-full bg-cover bg-center opacity-50 blur-xs"
+          style={{
+            backgroundImage: "url('/scenic1.jpg')",
+          }}
+        />
       </div>
       <main className="relative z-10 grow flex flex-col">
         <NavBar />
