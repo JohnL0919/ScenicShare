@@ -11,9 +11,13 @@ export default function HomePage() {
           autoPlay
           muted
           loop
-          className="w-full h-full object-cover opacity-50"
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover opacity-50 blur-xs"
         >
-          <source src="/scenicvid4.mp4" />
+          <source src="/scenicvid4.webm" type="video/webm" />
+          <source src="/scenicvid4.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
         </video>
       </div>
       <main className="relative z-10 grow flex flex-col">

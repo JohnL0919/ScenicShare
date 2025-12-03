@@ -12,6 +12,7 @@ export default function MyRoutes() {
           src="/scenic1.jpg"
           alt="Scenic background"
           fill
+          className="blur-xs"
           style={{
             objectFit: "cover",
             opacity: 0.4,
@@ -21,7 +22,7 @@ export default function MyRoutes() {
           quality={100}
         />
       </div>
-      <main className="relative z-10 flex-grow">
+      <main className="relative z-10 grow">
         <NavBar />
         <Header />
         <YourRoute />

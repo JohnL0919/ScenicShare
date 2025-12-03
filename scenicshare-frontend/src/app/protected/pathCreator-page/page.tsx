@@ -66,7 +66,7 @@ export default function PathCreatorPage() {
 
       <div className="h-screen w-full m-0 p-0 relative">
         {/* Back Button */}
-        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-[999] opacity-90">
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 z-999 opacity-90">
           <Button
             variant="primary"
             size="normal"

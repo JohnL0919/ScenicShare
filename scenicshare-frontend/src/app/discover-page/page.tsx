@@ -7,14 +7,12 @@ export default function DiscoverPage() {
   return (
     <div className="relative min-h-screen flex flex-col">
       <div className="fixed inset-0 w-full h-full z-0">
-        <video
-          autoPlay
-          muted
-          loop
-          className="w-full h-full object-cover opacity-50"
-        >
-          <source src="/scenicvid4.mp4" />
-        </video>
+        <div
+          className="w-full h-full bg-cover bg-center opacity-50 blur-xs"
+          style={{
+            backgroundImage: "url('/scenic1.jpg')",
+          }}
+        />
       </div>
       <main className="relative z-10 grow flex flex-col">
         <NavBar />

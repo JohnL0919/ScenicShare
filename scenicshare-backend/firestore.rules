@@ -46,5 +46,11 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAuthenticated() && request.auth.uid == userId;
     }
+    
+    // users collection (lowercase) for user settings and permissions
+    match /users/{userId} {
+      allow read: if isAuthenticated() && isOwner(userId);
+      allow write: if isAuthenticated() && isOwner(userId);
+    }
   }
 }

@@ -108,7 +108,7 @@ export default function ControlPanel({
         isPublic
       );
 
-      console.log("✅ Route saved successfully with ID:", routeId);
+      console.log("Route saved successfully with ID:", routeId);
 
       setSaveMessage({
         type: "success",
@@ -136,7 +136,7 @@ export default function ControlPanel({
         aria-expanded={open}
         aria-controls="route-drawer"
         className="
-          fixed bottom-4 right-4 z-[1003]
+          fixed bottom-4 right-4 z-1003
           rounded-full shadow-lg px-4 py-2
           bg-blue-600 text-white text-sm
           hover:bg-blue-700
@@ -150,7 +150,7 @@ export default function ControlPanel({
       <aside
         id="route-drawer"
         className={`
-          fixed top-1/2 -translate-y-1/2 right-[1rem] z-[1000] rounded-2xl
+          fixed top-1/2 -translate-y-1/2 right-4 z-1000 rounded-2xl
           w-[360px] md:w-[380px] lg:w-[360px]
           max-h-[80vh]
           bg-white/95 backdrop-blur border-l border-black/10 shadow-xl
@@ -162,7 +162,7 @@ export default function ControlPanel({
         aria-label="Route creator panel"
       >
         {/* Sticky Header */}
-        <div className="p-4 pb-3 bg-white rounded-t-2xl border-b border-gray-200 flex-shrink-0">
+        <div className="p-4 pb-3 bg-white rounded-t-2xl border-b border-gray-200 shrink-0">
           <h1 className="text-xl font-bold text-gray-800 mb-1">
             Create Your Route
           </h1>
@@ -232,7 +232,7 @@ export default function ControlPanel({
                 >
                   <div className="flex items-start gap-2">
                     <svg
-                      className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
+                      className={`w-5 h-5 mt-0.5 shrink-0 ${
                         !isPublic ? "text-blue-600" : "text-gray-400"
                       }`}
                       fill="currentColor"
@@ -270,7 +270,7 @@ export default function ControlPanel({
                 >
                   <div className="flex items-start gap-2">
                     <svg
-                      className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
+                      className={`w-5 h-5 mt-0.5 shrink-0 ${
                         isPublic ? "text-green-600" : "text-gray-400"
                       }`}
                       fill="currentColor"
@@ -304,7 +304,7 @@ export default function ControlPanel({
                 <div className="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200">
                   <div className="flex items-start gap-2">
                     <svg
-                      className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"
+                      className="w-5 h-5 text-amber-600 shrink-0 mt-0.5"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -398,7 +398,7 @@ export default function ControlPanel({
         </div>
 
         {/* Sticky Footer with Save Message and Button */}
-        <div className="border-t border-gray-200 bg-white p-4 rounded-b-2xl flex-shrink-0">
+        <div className="border-t border-gray-200 bg-white p-4 rounded-b-2xl shrink-0">
           {saveMessage && (
             <div
               className={`mb-3 p-3 rounded-lg text-sm font-medium flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300 ${
@@ -409,7 +409,7 @@ export default function ControlPanel({
             >
               {saveMessage.type === "success" ? (
                 <svg
-                  className="w-5 h-5 flex-shrink-0"
+                  className="w-5 h-5 shrink-0"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
@@ -421,7 +421,7 @@ export default function ControlPanel({
                 </svg>
               ) : (
                 <svg
-                  className="w-5 h-5 flex-shrink-0"
+                  className="w-5 h-5 shrink-0"
                   fill="currentColor"
                   viewBox="0 0 20 20"
                 >
