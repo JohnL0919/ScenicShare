@@ -38,7 +38,8 @@ interface RouteMapPreviewProps {
 // Inner component that has access to the map instance
 function RouteLayer({ waypoints }: { waypoints: Waypoint[] }) {
   const map = useMap();
-  const routingControlRef = useRef<L.Routing.Control | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const routingControlRef = useRef<any>(null);
 
   useEffect(() => {
     if (!map || waypoints.length === 0) return;
@@ -138,7 +139,7 @@ function RouteLayer({ waypoints }: { waypoints: Waypoint[] }) {
       markers.forEach((marker) => {
         try {
           map.removeLayer(marker);
-        } catch (e) {
+        } catch {
           // Ignore cleanup errors
         }
       });
