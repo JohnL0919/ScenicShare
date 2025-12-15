@@ -139,9 +139,7 @@ function RouteLayer({ waypoints }: { waypoints: Waypoint[] }) {
       markers.forEach((marker) => {
         try {
           map.removeLayer(marker);
-        } catch {
-          // Ignore cleanup errors
-        }
+        } catch {}
       });
     };
   }, [map, waypoints]);
